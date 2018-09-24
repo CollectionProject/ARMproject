@@ -1,5 +1,0 @@
--c --cpu Cortex-M3 -g -O2 --apcs=interwork -I..\HARDWARE\LED -I..\SYSTEM\delay -I..\SYSTEM\sys -I..\SYSTEM\usart -I..\USER -I..\STM32F10x_FWLib\inc -I..\CORE -I..\HARDWARE\KEY -I..\HARDWARE\LCD -I..\HARDWARE\RTC -I..\HARDWARE\DMA -I..\HARDWARE\IIC -I..\HARDWARE\24CXX -I..\HARDWARE\SPI -I..\HARDWARE\TOUCH -I..\HARDWARE\W25QXX -I..\UCOSII\CONFIG -I..\UCOSII\CORE -I..\UCOSII\PORT -I..\HARDWARE\BEEP -I..\MALLOC 
--I C:\Keil\ARM\RV31\INC 
--I C:\Keil\ARM\CMSIS\Include 
--I C:\Keil\ARM\Inc\ST\STM32F10x 
--DSTM32F10X_CL -DUSE_STDPERIPH_DRIVER -o "..\OBJ\lcd.o" --omf_browse "..\OBJ\lcd.crf" --depend "..\OBJ\lcd.d" "..\HARDWARE\LCD\lcd.c"
