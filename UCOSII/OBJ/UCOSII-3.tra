@@ -1,0 +1,61 @@
+*** Creating Trace Output File '..\OBJ\UCOSII-3.tra' Ok.
+### Preparing for ADS-LD.
+### Creating ADS-LD Command Line
+### List of Objects: adding '"..\obj\main.o"'
+### List of Objects: adding '"..\obj\stm32f10x_it.o"'
+### List of Objects: adding '"..\obj\system_stm32f10x.o"'
+### List of Objects: adding '"..\obj\led.o"'
+### List of Objects: adding '"..\obj\key.o"'
+### List of Objects: adding '"..\obj\beep.o"'
+### List of Objects: adding '"..\obj\lcd.o"'
+### List of Objects: adding '"..\obj\myiic.o"'
+### List of Objects: adding '"..\obj\24cxx.o"'
+### List of Objects: adding '"..\obj\spi.o"'
+### List of Objects: adding '"..\obj\w25qxx.o"'
+### List of Objects: adding '"..\obj\touch.o"'
+### List of Objects: adding '"..\obj\ctiic.o"'
+### List of Objects: adding '"..\obj\ott2001a.o"'
+### List of Objects: adding '"..\obj\ft5206.o"'
+### List of Objects: adding '"..\obj\gt9147.o"'
+### List of Objects: adding '"..\obj\tpad.o"'
+### List of Objects: adding '"..\obj\delay.o"'
+### List of Objects: adding '"..\obj\sys.o"'
+### List of Objects: adding '"..\obj\usart.o"'
+### List of Objects: adding '"..\obj\malloc.o"'
+### List of Objects: adding '"..\obj\core_cm3.o"'
+### List of Objects: adding '"..\obj\startup_stm32f10x_hd.o"'
+### List of Objects: adding '"..\obj\misc.o"'
+### List of Objects: adding '"..\obj\stm32f10x_fsmc.o"'
+### List of Objects: adding '"..\obj\stm32f10x_gpio.o"'
+### List of Objects: adding '"..\obj\stm32f10x_rcc.o"'
+### List of Objects: adding '"..\obj\stm32f10x_spi.o"'
+### List of Objects: adding '"..\obj\stm32f10x_usart.o"'
+### List of Objects: adding '"..\obj\stm32f10x_tim.o"'
+### List of Objects: adding '"..\obj\os_core.o"'
+### List of Objects: adding '"..\obj\os_flag.o"'
+### List of Objects: adding '"..\obj\os_mbox.o"'
+### List of Objects: adding '"..\obj\os_mem.o"'
+### List of Objects: adding '"..\obj\os_mutex.o"'
+### List of Objects: adding '"..\obj\os_q.o"'
+### List of Objects: adding '"..\obj\os_sem.o"'
+### List of Objects: adding '"..\obj\os_task.o"'
+### List of Objects: adding '"..\obj\os_time.o"'
+### List of Objects: adding '"..\obj\os_tmr.o"'
+### List of Objects: adding '"..\obj\os_cpu_a.o"'
+### List of Objects: adding '"..\obj\os_cpu_c.o"'
+### ADS-LD Command completed:
+--cpu Cortex-M3 "..\obj\main.o" "..\obj\stm32f10x_it.o" "..\obj\system_stm32f10x.o" "..\obj\led.o" "..\obj\key.o" "..\obj\beep.o" "..\obj\lcd.o" "..\obj\myiic.o" "..\obj\24cxx.o" "..\obj\spi.o" "..\obj\w25qxx.o" "..\obj\touch.o" "..\obj\ctiic.o" "..\obj\ott2001a.o" "..\obj\ft5206.o" "..\obj\gt9147.o" "..\obj\tpad.o" "..\obj\delay.o" "..\obj\sys.o" "..\obj\usart.o" "..\obj\malloc.o" "..\obj\core_cm3.o" "..\obj\startup_stm32f10x_hd.o" "..\obj\misc.o" "..\obj\stm32f10x_fsmc.o" "..\obj\stm32f10x_gpio.o" "..\obj\stm32f10x_rcc.o" "..\obj\stm32f10x_spi.o" "..\obj\stm32f10x_usart.o" "..\obj\stm32f10x_tim.o" "..\obj\os_core.o" "..\obj\os_flag.o" "..\obj\os_mbox.o" "..\obj\os_mem.o" "..\obj\os_mutex.o" "..\obj\os_q.o" "..\obj\os_sem.o" "..\obj\os_task.o" "..\obj\os_time.o" "..\obj\os_tmr.o" "..\obj\os_cpu_a.o" "..\obj\os_cpu_c.o" 
+--strict --scatter "..\OBJ\UCOSII-3.sct" 
+--summary_stderr --info summarysizes --map --xref --callgraph --symbols 
+--info sizes --info totals --info unused --info veneers 
+ --list ".\UCOSII-3.map" -o ..\OBJ\UCOSII-3.axf### Preparing Environment (PrepEnvAds)
+### ADS-LD Output File: '..\OBJ\UCOSII-3.axf'
+### ADS-LD Command File: '..\OBJ\UCOSII-3.lnp'
+### Checking for dirty Components...
+### Creating CmdFile '..\OBJ\UCOSII-3.lnp', Handle=0x000005B0
+### Writing '.lnp' file
+### ADS-LD Command file '..\OBJ\UCOSII-3.lnp' is ready.
+### ADS-LD: About to start ADS-LD Thread.
+### ADS-LD: executed with 0 errors
+### Updating obj list
+### LDADS_file() completed.
