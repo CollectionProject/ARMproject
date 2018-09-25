@@ -52,7 +52,7 @@ static __IO uint8_t HyalineBack = HyalineBackDis;
   * @{
   */ 
 
-#define MAX_POLY_CORNERS   200
+#define MAX_POLY_CORNERS     200
 #define POLY_Y(Z)          ((int32_t)((Points + Z)->X))
 #define POLY_X(Z)          ((int32_t)((Points + Z)->Y))
 
@@ -104,20 +104,17 @@ void LCD_DB_AS_OutPut(void)
 ****************************************************************************/
 void LCD_Setup(void)
 { 
-//    const uint8_t LogoStr[] = "  www.armjishu.com  ";
-//    uint8_t Devicestr[] = " LCD Driver ID:9320 ";
-
     /* Configure the LCD pins config --------------------------------------------*/
     LCD_Pins_Config();
 
-    Delay(1); /* Delay 50 ms */
+    delay_ms(50); /* Delay 50 ms */
     LCD_WriteReg(0x0000,0x0001);          //start internal osc
-    Delay(1); /* Delay 50 ms */
+    delay_ms(50); /* Delay 50 ms */
     DeviceIdCode = LCD_ReadReg(0x0000);
     DeviceIdCode = LCD_ReadReg(0x0000);
     LCD_DEBUG_PRINTF("\n\r ###### www.armjishu.com DeviceIdCode = 0x%x ###### ", DeviceIdCode);
 
-    Delay(1); /* Delay 50 ms */            //start internal osc
+    delay_ms(50); /* Delay 50 ms */            //start internal osc
 
     if(DeviceIdCode == 0x8999)
     {
@@ -152,24 +149,24 @@ void LCD_Setup(void)
         LCD_WriteReg(0x0011,0x0007);
         LCD_WriteReg(0x0012,0x0000);                                                                 
         LCD_WriteReg(0x0013,0x0000);                 
-        Delay(5);
-        Delay(5);
+        delay_ms(250);
+        delay_ms(250);
         LCD_WriteReg(0x0010,0x1590);   
         LCD_WriteReg(0x0011,0x0227);
-        Delay(5);
-        Delay(5);
+        delay_ms(250);
+        delay_ms(250);
         LCD_WriteReg(0x0012,0x009c);                  
-        Delay(5);
-        Delay(5);
+        delay_ms(250);
+        delay_ms(250);
         LCD_WriteReg(0x0013,0x1900);   
         LCD_WriteReg(0x0029,0x0023);
         LCD_WriteReg(0x002b,0x000e);
-        Delay(5);
-        Delay(5);
+        delay_ms(250);
+        delay_ms(250);
         LCD_WriteReg(0x0020,0x0000);                                                            
         LCD_WriteReg(0x0021,0x0000);           
-        Delay(5);
-        Delay(5);
+        delay_ms(250);
+        delay_ms(250);
         LCD_WriteReg(0x0030,0x0007); 
         LCD_WriteReg(0x0031,0x0707);   
         LCD_WriteReg(0x0032,0x0006);
@@ -180,8 +177,8 @@ void LCD_Setup(void)
         LCD_WriteReg(0x0039,0x0706);     
         LCD_WriteReg(0x003c,0x0701);
         LCD_WriteReg(0x003d,0x000f);
-        Delay(5);
-        Delay(5);
+        delay_ms(250);
+        delay_ms(250);
         LCD_WriteReg(0x0050,0x0000);        
         LCD_WriteReg(0x0051,0x00ef);   
         LCD_WriteReg(0x0052,0x0000);     
@@ -227,9 +224,9 @@ void LCD_Setup(void)
         LCD_WriteReg(0x0d,0x0000);      //Frame Maker Position.
         LCD_WriteReg(0x0f,0x0000);      //Extern Display Interface Contral 2.
     
-        Delay(5);
+        delay_ms(250);
         LCD_WriteReg(0x07,0x0101);      //Display Contral.
-        Delay(5);
+        delay_ms(250);
     
         LCD_WriteReg(0x10,(1<<12)|(0<<8)|(1<<7)|(1<<6)|(0<<4));     //Power Control 1.(0x16b0)
         LCD_WriteReg(0x11,0x0007);                                  //Power Control 2.(0x0001)
@@ -260,9 +257,9 @@ void LCD_Setup(void)
         LCD_WriteReg(0x95,0x0110);      //Frame Cycle Contral.(0x0110)
         LCD_WriteReg(0x97,(0<<8));      //
         LCD_WriteReg(0x98,0x0000);      //Frame Cycle Contral.
-        Delay(5);
+        delay_ms(250);
         LCD_WriteReg(0x07,0x0173);      //(0x0173)
-        Delay(5);
+        delay_ms(250);
     }
     else if(DeviceIdCode==0x9331)
     {
@@ -281,16 +278,16 @@ void LCD_Setup(void)
         LCD_WriteReg(0x0011, 0x0007);   // DC1[2:0], DC0[2:0], VC[2:0]
         LCD_WriteReg(0x0012, 0x0000);   // VREG1OUT voltage
         LCD_WriteReg(0x0013, 0x0000);   // VDV[4:0] for VCOM amplitude
-        Delay(5); // Dis-charge capacitor power voltage
+        delay_ms(250); // Dis-charge capacitor power voltage
         LCD_WriteReg(0x0010, 0x1690);   // SAP, BT[3:0], AP, DSTB, SLP, STB
         LCD_WriteReg(0x0011, 0x0227);   // DC1[2:0], DC0[2:0], VC[2:0]
-        Delay(2); // Delay 50ms
+        delay_ms(100); // Delay 50ms
         LCD_WriteReg(0x0012, 0x000C);   // Internal reference voltage= Vci;
-        Delay(2); // Delay 50ms
+        delay_ms(100); // Delay 50ms
         LCD_WriteReg(0x0013, 0x0800);   // Set VDV[4:0] for VCOM amplitude
         LCD_WriteReg(0x0029, 0x0011);   // Set VCM[5:0] for VCOMH
         LCD_WriteReg(0x002B, 0x000B);   // Set Frame Rate
-        Delay(2); // Delay 50ms
+        delay_ms(100); // Delay 50ms
         LCD_WriteReg(0x0020, 0x0000);   // GRAM horizontal Address
         LCD_WriteReg(0x0021, 0x0000);   // GRAM Vertical Address
         // ----------- Adjust the Gamma Curve ----------//
@@ -323,11 +320,11 @@ void LCD_Setup(void)
         LCD_WriteReg(0x0090, 0x0010);
         LCD_WriteReg(0x0092, 0x0600);
         LCD_WriteReg(0x0007,0x0021);        
-        Delay(2);
+        delay_ms(100);
         LCD_WriteReg(0x0007,0x0061);
-        Delay(2);
+        delay_ms(100);
         LCD_WriteReg(0x0007,0x0133);    // 262K color and display ON
-        Delay(2);
+        delay_ms(100);
     }
     else if(DeviceIdCode==0x9919)
     {
@@ -371,7 +368,7 @@ void LCD_Setup(void)
     {
         // second release on 3/5  ,luminance is acceptable,water wave appear during camera preview
         LCD_WriteReg(0x0007,0x0000);
-        Delay(2);
+        delay_ms(100);
         LCD_WriteReg(0x0012,0x011C);    //0x011A   why need to set several times?
         LCD_WriteReg(0x00A4,0x0001);    //NVM
         LCD_WriteReg(0x0008,0x000F);
@@ -393,10 +390,10 @@ void LCD_Setup(void)
         LCD_WriteReg(0x003B,0x0000);    //0x0303
         LCD_WriteReg(0x003C,0x0007);    //?0x0707
         LCD_WriteReg(0x003D,0x0000);    //0x1313//0x1f08
-        Delay(2);
+        delay_ms(100);
         LCD_WriteReg(0x0007,0x0001);
         LCD_WriteReg(0x0017,0x0001);    //Power supply startup enable
-        Delay(2);
+        delay_ms(100);
   
         //power control//
         LCD_WriteReg(0x0010,0x17A0); 
@@ -439,11 +436,11 @@ void LCD_Setup(void)
         LCD_WriteReg(0x0020,0x0000); 
         LCD_WriteReg(0x0021,0x0000); 
         LCD_WriteReg(0x0007,0x0021); 
-        Delay(2);
+        delay_ms(100);
         LCD_WriteReg(0x0007,0x0061); 
-        Delay(2);
+        delay_ms(100);
         LCD_WriteReg(0x0007,0x0173); 
-        Delay(2);
+        delay_ms(100);
     }                             
     else if(DeviceIdCode==0x8989)
     {
@@ -1822,7 +1819,7 @@ void LCD_DrawChar(uint16_t Xpos, uint16_t Ypos, const uint8_t *cpFontArray)
                     LCD_WriteRAM(TextColor); //putchar('*');
                 }
                 i--;
-                //Delay(2);//此处加延迟可以清楚的看到组成字符的一个个的点绘制过程
+                //delay_ms(100);//此处加延迟可以清楚的看到组成字符的一个个的点绘制过程
             }
             index++;
         }   
@@ -1934,7 +1931,7 @@ void LCD_DisplayCurrentFont(void)
                 line = LCD_Currentfonts->Height + 1;
                 if(cChar<=0x7F)
                 {
-                    delay(36000000);
+                    delay_ms(1000);
                     LCD_Clear(LCD_COLOR_WHITE);
                     LCD_DisplayStringLine(0, sStr);
                 }
@@ -1962,7 +1959,7 @@ void LCD_DisplayAllFont(void)
     {
         LCD_SetFont(pFontTable[i]);
         LCD_DisplayCurrentFont();
-        delay(36000000);
+        delay_ms(1000);
     }
 
     LCD_SetFont(LCD_OldCurrentfonts);

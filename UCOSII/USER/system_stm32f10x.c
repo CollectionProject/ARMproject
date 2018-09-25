@@ -1,9 +1,9 @@
 /**
   ******************************************************************************
-  * @file    GPIO/IOToggle/system_stm32f10x.c
+  * @file    system_stm32f10x.c
   * @author  MCD Application Team
   * @version V3.5.0
-  * @date    08-April-2011
+  * @date    11-March-2011
   * @brief   CMSIS Cortex-M3 Device Peripheral Access Layer System Source File.
   * 
   * 1.  This file provides two functions and one global variable to be called from 
@@ -109,10 +109,11 @@
 #else
 /* #define SYSCLK_FREQ_HSE    HSE_VALUE */
 /* #define SYSCLK_FREQ_24MHz  24000000 */ 
-/* #define SYSCLK_FREQ_36MHz  36000000 */
-/* #define SYSCLK_FREQ_48MHz  48000000 */
-/* #define SYSCLK_FREQ_56MHz  56000000 */
-#define SYSCLK_FREQ_72MHz  72000000
+ #define SYSCLK_FREQ_36MHz  36000000
+
+   //#define SYSCLK_FREQ_48MHz  48000000 
+   //  #define SYSCLK_FREQ_56MHz  56000000 
+   //#define SYSCLK_FREQ_72MHz  72000000 
 #endif
 
 /*!< Uncomment the following line if you need to use external SRAM mounted
@@ -492,7 +493,7 @@ void SystemInit_ExtMemCtl(void)
 #ifdef SYSCLK_FREQ_HSE
 /**
   * @brief  Selects HSE as System clock source and configure HCLK, PCLK2
-  *          and PCLK1 prescalers.
+  *         and PCLK1 prescalers.
   * @note   This function should be used only after reset.
   * @param  None
   * @retval None
@@ -571,7 +572,7 @@ static void SetSysClockToHSE(void)
 #elif defined SYSCLK_FREQ_24MHz
 /**
   * @brief  Sets System clock frequency to 24MHz and configure HCLK, PCLK2 
-  *          and PCLK1 prescalers.
+  *         and PCLK1 prescalers.
   * @note   This function should be used only after reset.
   * @param  None
   * @retval None
@@ -675,7 +676,7 @@ static void SetSysClockTo24(void)
 #elif defined SYSCLK_FREQ_36MHz
 /**
   * @brief  Sets System clock frequency to 36MHz and configure HCLK, PCLK2 
-  *          and PCLK1 prescalers. 
+  *         and PCLK1 prescalers. 
   * @note   This function should be used only after reset.
   * @param  None
   * @retval None
@@ -730,6 +731,7 @@ static void SetSysClockTo36(void)
     RCC->CFGR |= (uint32_t)(RCC_CFGR_PLLXTPRE_PREDIV1 | RCC_CFGR_PLLSRC_PREDIV1 | 
                             RCC_CFGR_PLLMULL9); 
 
+   //HSE 25M
 	/*!< PLL2 configuration: PLL2CLK = (HSE / 5) * 8 = 40 MHz */
     /* PREDIV1 configuration: PREDIV1CLK = PLL2 / 10 = 4 MHz */
         
@@ -776,7 +778,7 @@ static void SetSysClockTo36(void)
 #elif defined SYSCLK_FREQ_48MHz
 /**
   * @brief  Sets System clock frequency to 48MHz and configure HCLK, PCLK2 
-  *          and PCLK1 prescalers. 
+  *         and PCLK1 prescalers. 
   * @note   This function should be used only after reset.
   * @param  None
   * @retval None
@@ -877,7 +879,7 @@ static void SetSysClockTo48(void)
 #elif defined SYSCLK_FREQ_56MHz
 /**
   * @brief  Sets System clock frequency to 56MHz and configure HCLK, PCLK2 
-  *          and PCLK1 prescalers. 
+  *         and PCLK1 prescalers. 
   * @note   This function should be used only after reset.
   * @param  None
   * @retval None
@@ -979,7 +981,7 @@ static void SetSysClockTo56(void)
 #elif defined SYSCLK_FREQ_72MHz
 /**
   * @brief  Sets System clock frequency to 72MHz and configure HCLK, PCLK2 
-  *          and PCLK1 prescalers. 
+  *         and PCLK1 prescalers. 
   * @note   This function should be used only after reset.
   * @param  None
   * @retval None
@@ -1015,8 +1017,7 @@ static void SetSysClockTo72(void)
 
     /* Flash 2 wait state */
     FLASH->ACR &= (uint32_t)((uint32_t)~FLASH_ACR_LATENCY);
-    FLASH->ACR |= (uint32_t)FLASH_ACR_LATENCY_2;    
-
+    FLASH->ACR |= (uint32_t)FLASH_ACR_LATENCY_2;   
  
     /* HCLK = SYSCLK */
     RCC->CFGR |= (uint32_t)RCC_CFGR_HPRE_DIV1;
@@ -1030,8 +1031,7 @@ static void SetSysClockTo72(void)
 #ifdef STM32F10X_CL
     /* Configure PLLs ------------------------------------------------------*/
     /* PLL2 configuration: PLL2CLK = (HSE / 5) * 8 = 40 MHz */
-    /* PREDIV1 configuration: PREDIV1CLK = PLL2 / 5 = 8 MHz */
-        
+    /* PREDIV1 configuration: PREDIV1CLK = PLL2 / 5 = 8 MHz */        
     RCC->CFGR2 &= (uint32_t)~(RCC_CFGR2_PREDIV2 | RCC_CFGR2_PLL2MUL |
                               RCC_CFGR2_PREDIV1 | RCC_CFGR2_PREDIV1SRC);
     RCC->CFGR2 |= (uint32_t)(RCC_CFGR2_PREDIV2_DIV5 | RCC_CFGR2_PLL2MUL8 |
@@ -1042,8 +1042,7 @@ static void SetSysClockTo72(void)
     /* Wait till PLL2 is ready */
     while((RCC->CR & RCC_CR_PLL2RDY) == 0)
     {
-    }
-    
+    }		    
    
     /* PLL configuration: PLLCLK = PREDIV1 * 9 = 72 MHz */ 
     RCC->CFGR &= (uint32_t)~(RCC_CFGR_PLLXTPRE | RCC_CFGR_PLLSRC | RCC_CFGR_PLLMULL);

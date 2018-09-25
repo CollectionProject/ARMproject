@@ -230,7 +230,7 @@ void SZ_TS_Read(void)
         //printf("\n\r%d,%d", xScreen, yScreen);
         if((TS_INT_VALID) && distence(sDataX,xScreen) && distence(sDataY,yScreen))
         {
-						delay(250000);
+						delay_ms(25);
 						if((TS_INT_VALID) && distence(sDataX,xScreen) && distence(sDataY,yScreen))
 						{
 								//LCD_BigPoint(yScreen, xScreen);

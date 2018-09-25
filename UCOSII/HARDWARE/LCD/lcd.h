@@ -32,9 +32,6 @@
 #include "usart.h"	 
 #include "delay.h"	
 
-#define Delay(n)  delay_ms((n)*50)
-#define delay(x)  delay_ms((x)/240000)
-
 /* 神舟IV号LCD管脚相关定义  www.armjishu.com Team  */ 
 #define LCD_PinNum_WR               14
 #define LCD_Pin_WR                  GPIO_Pin_14
