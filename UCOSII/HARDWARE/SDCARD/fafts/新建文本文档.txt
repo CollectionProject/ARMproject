@@ -1,0 +1,5 @@
+	LCD_Clear(LCD_COLOR_WHITE);
+	sprintf(str,"file name is: %s\r\n",finfo.fname);
+	LCD_DisplayStringLine(LCD_LINE_0,str);
+	sprintf(str,"file size is: %d\r\n", finfo.fsize);
+	LCD_DisplayStringLine(LCD_LINE_1,str);

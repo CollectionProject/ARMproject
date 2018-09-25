@@ -8,6 +8,16 @@
 #include "beep.h"   
 #include "touch.h"    
 #include "includes.h"  
+#include "ff.h"
+#include "diskio.h"
+#include "sdcard.h"
+
+/* ------------------file------------------------ */
+FATFS fs;            // Work area (file system object) for logical drive
+FIL fsrc, fdst;      // file objects
+BYTE buffer[51];     // file copy buffer
+FRESULT res;         // FatFs function common result code
+UINT br, bw;         // File R/W count
 
 /////////////////////////UCOSII任务设置///////////////////////////////////
 //START 任务
@@ -73,24 +83,62 @@ void ucos_load_main_ui(void)
 	delay_ms(300);
 }	  
 
-
- int main(void)
- {	 		    
+int main(void)
+{	 		    
+	char *str;
+			FILINFO finfo;
+		DIR dirs;
+		char path[100]={""};  
+		SD_CardInfo cardinfo;
 	delay_init();	    	 //延时函数初始化	  
-  NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);//设置中断优先级分组为组2：2位抢占优先级，2位响应优先级
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);//设置中断优先级分组为组2：2位抢占优先级，2位响应优先级
 	uart_init(115200);	 	//串口初始化为115200
-
-	LED_Init(LED1);
-  LED_Init(LED2);
-	LED_Init(LED3);
-	LED_Init(LED4);
-	 
 	SZ_STM32_LCDInit();
 	//BEEP_Init();
+
+	LED_Init(LED1);
+	LED_Init(LED2);
+	LED_Init(LED3);
+	LED_Init(LED4);
+
+	printf("\n file system starting! \n");
+	SD_Init();
+	SD_GetCardInfo(&cardinfo);
+	disk_initialize(0);
+	f_mount(0, &fs);
+  LCD_Clear(LCD_COLOR_WHITE);
+	LCD_DisplayStringLine(LCD_LINE_0,"SD Card IN");
+	sprintf(str,"file size is: %d MB", cardinfo.CardCapacity/ 1024 / 1024);
+	LCD_DisplayStringLine(LCD_LINE_1,str);
 	
-	ucos_load_main_ui(); 		//加载主界面
+	if (f_opendir(&dirs, path) == FR_OK) 
+	{
+		while (f_readdir(&dirs, &finfo) == FR_OK)  
+		{
+			if (finfo.fattrib & AM_ARC) 
+			{
+				if(!finfo.fname[0])	
+					break;         
+				  sprintf(str,"file size is: %s", finfo.fname);
+					LCD_DisplayStringLine(LCD_LINE_2,str);
+				  sprintf(str,"file size is: %d bytes", finfo.fsize);
+				  LCD_DisplayStringLine(LCD_LINE_3,str);
+			}
+			else
+			{
+				printf("\n\r Path name is: %s", finfo.fname); 
+				break;
+			}
+		} 
+	}
+	else
+	{
+			printf("\n\r err: f_opendir\n\r"); 
+	}
+	
+	//ucos_load_main_ui(); 		//加载主界面
 	OSInit();  	 				//初始化UCOSII
-  	OSTaskCreate(start_task,(void *)0,(OS_STK *)&START_TASK_STK[START_STK_SIZE-1],START_TASK_PRIO );//创建起始任务
+		OSTaskCreate(start_task,(void *)0,(OS_STK *)&START_TASK_STK[START_STK_SIZE-1],START_TASK_PRIO );//创建起始任务
 	OSStart();	  
 }
 
@@ -128,14 +176,48 @@ void led_task(void *pdata)
 //触摸屏任务
 void touch_task(void *pdata)
 {	  	
-	while(1)
-	{
-		LED2_STATE = 0;
-		delay_ms(1000);	 
-		LED2_STATE = 1;
-		delay_ms(1000);
-		printf("This is Touch task\r\n");
-	}
+		FILINFO finfo;
+		DIR dirs;
+		char path[100]={""};  
+		SD_CardInfo cardinfo;
+
+		printf("\n file system starting! \n");
+		SD_Init();
+		SD_GetCardInfo(&cardinfo);
+		disk_initialize(0);
+		f_mount(0, &fs);
+
+		if (f_opendir(&dirs, path) == FR_OK) 
+		{
+			while (f_readdir(&dirs, &finfo) == FR_OK)  
+			{
+				if (finfo.fattrib & AM_ARC) 
+				{
+					if(!finfo.fname[0])	
+						break;         
+						printf("\n\r file name is: %s\n",finfo.fname);
+						printf("\n\r file size is: %d ", finfo.fsize); 
+				}
+				else
+				{
+					printf("\n\r Path name is: %s", finfo.fname); 
+					break;
+				}
+			} 
+		}
+		else
+		{
+				printf("\n\r err: f_opendir\n\r"); 
+		}
+ 
+		while(1)
+		{
+			LED2_STATE = 0;
+			delay_ms(1000);	 
+			LED2_STATE = 1;
+			delay_ms(1000);
+			//printf("This is Touch task\r\n");
+		}
 }     
 
 //主任务
@@ -147,7 +229,7 @@ void main_task(void *pdata)
 		delay_ms(1000);	 
 		LED3_STATE = 1;
 		delay_ms(1000);
-		printf("This is Main task\r\n");
+		//printf("This is Main task\r\n");
 	}
 }		   
    		    
@@ -160,6 +242,6 @@ void key_task(void *pdata)
 		delay_ms(1000);	 
 		LED4_STATE = 1;
 		delay_ms(1000);
-		printf("This is Key task\r\n");
+		//printf("This is Key task\r\n");
 	}
 }

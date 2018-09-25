@@ -241,10 +241,10 @@ typedef struct
   * @brief LCD default font 
   */ 
 //#define LCD_DEFAULT_FONT         Font24x48
-#define LCD_DEFAULT_FONT           Font16x24
+//#define LCD_DEFAULT_FONT           Font16x24
 //#define LCD_DEFAULT_FONT         Font12x24
 //#define LCD_DEFAULT_FONT         Font12x12
-//#define LCD_DEFAULT_FONT         Font8x16
+#define LCD_DEFAULT_FONT         Font8x16
 //#define LCD_DEFAULT_FONT         Font8x12
 //#define LCD_DEFAULT_FONT         Font8x8
 
