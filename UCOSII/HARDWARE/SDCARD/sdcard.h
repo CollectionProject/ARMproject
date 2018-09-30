@@ -2,7 +2,7 @@
 #include "sys.h"	
 #include "usart.h"	 
 #include "delay.h"
-#include "lcd.h"
+#include "bsp_lcd.h"
 
 #define SD_SPI                           SPI1
 #define SD_SPI_CLK                       RCC_APB2Periph_SPI1

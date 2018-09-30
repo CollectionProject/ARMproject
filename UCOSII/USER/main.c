@@ -2,7 +2,7 @@
 #include "delay.h"
 #include "usart.h" 
 #include "led.h" 		 	 
-#include "lcd.h"  
+#include "bsp_lcd.h"  
 #include "key.h"     
 #include "malloc.h"
 #include "beep.h"   
@@ -11,6 +11,7 @@
 #include "ff.h"
 #include "diskio.h"
 #include "sdcard.h"
+#include "ugui.h"
 
 /* ------------------file------------------------ */
 FATFS fs;            // Work area (file system object) for logical drive
@@ -18,6 +19,8 @@ FIL fsrc, fdst;      // file objects
 BYTE buffer[51];     // file copy buffer
 FRESULT res;         // FatFs function common result code
 UINT br, bw;         // File R/W count
+
+UG_GUI gui ; // Global GUI structure
 
 /////////////////////////UCOSII任务设置///////////////////////////////////
 //START 任务
@@ -53,9 +56,9 @@ void touch_task(void *pdata);
 
 //主任务
 //设置任务优先级
-#define MAIN_TASK_PRIO       			4 
+#define MAIN_TASK_PRIO       			20 
 //设置任务堆栈大小
-#define MAIN_STK_SIZE  					128
+#define MAIN_STK_SIZE  					1024
 //任务堆栈	
 OS_STK MAIN_TASK_STK[MAIN_STK_SIZE];
 //任务函数
@@ -83,60 +86,49 @@ void ucos_load_main_ui(void)
 	delay_ms(300);
 }	  
 
+USHORT rgb_24_2_565(UG_COLOR c)
+{
+	return (USHORT)((((unsigned)((c>>16)&0xFF) >> 3) <<11) |   
+            (((unsigned)((c>>8)&0xFF) >> 2) << 5 )  |  
+            (((unsigned)(c&0xFF) >> 3)));
+}
+
+void UserPixelSetFunction ( UG_S16 x , UG_S16 y ,UG_COLOR c )
+{
+	// Your code . . . .
+	LCD_SetPoint(x,y,rgb_24_2_565(c));
+}
+
 int main(void)
 {	 		    
-	char *str;
-			FILINFO finfo;
-		DIR dirs;
-		char path[100]={""};  
-		SD_CardInfo cardinfo;
+//	char *str;
+// 	FILINFO finfo;
+// 	DIR dirs;
+// 	char path[100]={""};  
+// 	SD_CardInfo cardinfo;
+	
 	delay_init();	    	 //延时函数初始化	  
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);//设置中断优先级分组为组2：2位抢占优先级，2位响应优先级
 	uart_init(115200);	 	//串口初始化为115200
 	SZ_STM32_LCDInit();
 	//BEEP_Init();
 
+	UG_Init(&gui , UserPixelSetFunction , 240 , 320) ;
+
 	LED_Init(LED1);
 	LED_Init(LED2);
 	LED_Init(LED3);
 	LED_Init(LED4);
 
-	printf("\n file system starting! \n");
-	SD_Init();
-	SD_GetCardInfo(&cardinfo);
-	disk_initialize(0);
-	f_mount(0, &fs);
-  LCD_Clear(LCD_COLOR_WHITE);
-	LCD_DisplayStringLine(LCD_LINE_0,"SD Card IN");
-	sprintf(str,"file size is: %d MB", cardinfo.CardCapacity/ 1024 / 1024);
-	LCD_DisplayStringLine(LCD_LINE_1,str);
 	
-	if (f_opendir(&dirs, path) == FR_OK) 
-	{
-		while (f_readdir(&dirs, &finfo) == FR_OK)  
-		{
-			if (finfo.fattrib & AM_ARC) 
-			{
-				if(!finfo.fname[0])	
-					break;         
-				  sprintf(str,"file size is: %s", finfo.fname);
-					LCD_DisplayStringLine(LCD_LINE_2,str);
-				  sprintf(str,"file size is: %d bytes", finfo.fsize);
-				  LCD_DisplayStringLine(LCD_LINE_3,str);
-			}
-			else
-			{
-				printf("\n\r Path name is: %s", finfo.fname); 
-				break;
-			}
-		} 
-	}
-	else
-	{
-			printf("\n\r err: f_opendir\n\r"); 
-	}
+// 	printf("\n file system starting! \n");
+// 	SD_Init();
+// 	SD_GetCardInfo(&cardinfo);
+// 	disk_initialize(0);
+// 	f_mount(0, &fs);
+	//LCD_Clear(rgb_24_2_565(C_BLUE));
+	//UG_FillScreen(C_RED);
 	
-	//ucos_load_main_ui(); 		//加载主界面
 	OSInit();  	 				//初始化UCOSII
 		OSTaskCreate(start_task,(void *)0,(OS_STK *)&START_TASK_STK[START_STK_SIZE-1],START_TASK_PRIO );//创建起始任务
 	OSStart();	  
@@ -176,40 +168,6 @@ void led_task(void *pdata)
 //触摸屏任务
 void touch_task(void *pdata)
 {	  	
-		FILINFO finfo;
-		DIR dirs;
-		char path[100]={""};  
-		SD_CardInfo cardinfo;
-
-		printf("\n file system starting! \n");
-		SD_Init();
-		SD_GetCardInfo(&cardinfo);
-		disk_initialize(0);
-		f_mount(0, &fs);
-
-		if (f_opendir(&dirs, path) == FR_OK) 
-		{
-			while (f_readdir(&dirs, &finfo) == FR_OK)  
-			{
-				if (finfo.fattrib & AM_ARC) 
-				{
-					if(!finfo.fname[0])	
-						break;         
-						printf("\n\r file name is: %s\n",finfo.fname);
-						printf("\n\r file size is: %d ", finfo.fsize); 
-				}
-				else
-				{
-					printf("\n\r Path name is: %s", finfo.fname); 
-					break;
-				}
-			} 
-		}
-		else
-		{
-				printf("\n\r err: f_opendir\n\r"); 
-		}
- 
 		while(1)
 		{
 			LED2_STATE = 0;
@@ -219,10 +177,41 @@ void touch_task(void *pdata)
 			//printf("This is Touch task\r\n");
 		}
 }     
+   	
+void window_1_callback(UG_MESSAGE* msg)
+{
+	if(msg->type==MSG_TYPE_OBJECT)
+	{
+		if(msg->id==OBJ_TYPE_BUTTON)
+		{
+			switch(msg->sub_id)
+			{
+				case BTN_ID_0:
+				{
+					break;
+				}
+			}
+		}
+	}
+}
 
 //主任务
 void main_task(void *pdata)
-{							 			 
+{							 		
+	UG_WINDOW window_1;// Global window 1 structure
+	UG_BUTTON btn1;
+	UG_OBJECT obj_buff[10];
+	
+	UG_WindowCreate(&window_1,obj_buff,10,window_1_callback);
+	UG_WindowSetTitleText(&window_1,"Test Window");
+	UG_WindowSetTitleTextFont(&window_1,&FONT_12X20);
+	
+	UG_ButtonCreate (&window_1,&btn1,BTN_ID_0,10,10,110,60);
+	UG_ButtonSetFont(&window_1,BTN_ID_0,&FONT_12X20);
+	UG_ButtonSetText(&window_1,BTN_ID_0,"OK");
+	
+	UG_WindowShow(&window_1);
+	
  	while(1)
 	{
 		LED3_STATE = 0;
@@ -232,7 +221,7 @@ void main_task(void *pdata)
 		//printf("This is Main task\r\n");
 	}
 }		   
-   		    
+
 //按键扫描任务
 void key_task(void *pdata)
 {	
