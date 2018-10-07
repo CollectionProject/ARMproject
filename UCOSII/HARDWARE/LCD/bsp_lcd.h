@@ -253,7 +253,7 @@ typedef struct
   * @{
   */
 #define ASSEMBLE_RGB(R, G, B)    ((((R)& 0xF8) << 8) | (((G) & 0xFC) << 3) | (((B) & 0xF8) >> 3))   
-
+#define RGB_888toRGB_565(x)      ASSEMBLE_RGB((x>>16&0xFF),(x>>8&0xFF),(x&0xFF))
 /**  Image2Lcd保存的图像数据 typedef struct _HEADGRAY
 scan: 扫描模式 
 Bit7: 0:自左至右扫描，1:自右至左扫描。 

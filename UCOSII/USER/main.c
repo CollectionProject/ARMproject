@@ -86,17 +86,11 @@ void ucos_load_main_ui(void)
 	delay_ms(300);
 }	  
 
-USHORT rgb_24_2_565(UG_COLOR c)
-{
-	return (USHORT)((((unsigned)((c>>16)&0xFF) >> 3) <<11) |   
-            (((unsigned)((c>>8)&0xFF) >> 2) << 5 )  |  
-            (((unsigned)(c&0xFF) >> 3)));
-}
+
 
 void UserPixelSetFunction ( UG_S16 x , UG_S16 y ,UG_COLOR c )
 {
-	// Your code . . . .
-	LCD_SetPoint(x,y,rgb_24_2_565(c));
+	LCD_SetPoint(y,x,RGB_888toRGB_565(c));
 }
 
 int main(void)
@@ -113,14 +107,13 @@ int main(void)
 	SZ_STM32_LCDInit();
 	//BEEP_Init();
 
-	//UG_Init(&gui , UserPixelSetFunction , 240 , 320) ;
-
+	UG_Init(&gui , UserPixelSetFunction , 320 , 240) ;
+	UG_FontSetHSpace(0);
+	UG_FontSetVSpace(0);
 	LED_Init(LED1);
 	LED_Init(LED2);
 	LED_Init(LED3);
 	LED_Init(LED4);
-
-	LCD_DisplayStringLine(LCD_LINE_0,(u8 *)"welcome");
 	
 // 	printf("\n file system starting! \n");
 // 	SD_Init();
@@ -144,7 +137,7 @@ void start_task(void *pdata)
  	OS_ENTER_CRITICAL();				//进入临界区(无法被中断打断)    
  	OSTaskCreate(led_task,(void *)0,(OS_STK*)&LED_TASK_STK[LED_STK_SIZE-1],LED_TASK_PRIO);						   
  	OSTaskCreate(touch_task,(void *)0,(OS_STK*)&TOUCH_TASK_STK[TOUCH_STK_SIZE-1],TOUCH_TASK_PRIO);	 				   		   
- 	//OSTaskCreate(main_task,(void *)0,(OS_STK*)&MAIN_TASK_STK[MAIN_STK_SIZE-1],MAIN_TASK_PRIO);	 							   
+ 	OSTaskCreate(main_task,(void *)0,(OS_STK*)&MAIN_TASK_STK[MAIN_STK_SIZE-1],MAIN_TASK_PRIO);	 							   
  	OSTaskCreate(key_task,(void *)0,(OS_STK*)&KEY_TASK_STK[KEY_STK_SIZE-1],KEY_TASK_PRIO);	 				   
  	OSTaskSuspend(START_TASK_PRIO);		//挂起起始任务.
 	OS_EXIT_CRITICAL();					//退出临界区(可以被中断打断)
@@ -153,17 +146,13 @@ void start_task(void *pdata)
 //LED任务
 void led_task(void *pdata)
 {
-	u8 t=0;
 	while(1)
 	{
-		t++;
-		delay_ms(10);
-		if(t==8)LED1_STATE=1;	//LED0灭
-		if(t==100)		//LED0亮
-		{
-			t=0;
-			LED1_STATE=0;
-		}
+		LED1_STATE = 0;
+		delay_ms(200);	 
+		LED1_STATE = 1;
+		delay_ms(200);
+		UG_Update();
 	}									 
 }
 //触摸屏任务
@@ -175,7 +164,6 @@ void touch_task(void *pdata)
 			delay_ms(1000);	 
 			LED2_STATE = 1;
 			delay_ms(1000);
-			//printf("This is Touch task\r\n");
 		}
 }     
    	
@@ -195,23 +183,48 @@ void window_1_callback(UG_MESSAGE* msg)
 		}
 	}
 }
-
+#define POSX 100
+#define POSY 50
 //主任务
 void main_task(void *pdata)
 {							 		
-	UG_WINDOW window_1;// Global window 1 structure
-	UG_BUTTON btn1;
-	UG_OBJECT obj_buff[10];
+
 	
-	UG_WindowCreate(&window_1,obj_buff,10,window_1_callback);
-	UG_WindowSetTitleText(&window_1,"Test Window");
-	UG_WindowSetTitleTextFont(&window_1,&FONT_12X20);
 	
-	UG_ButtonCreate (&window_1,&btn1,BTN_ID_0,10,10,110,60);
-	UG_ButtonSetFont(&window_1,BTN_ID_0,&FONT_12X20);
-	UG_ButtonSetText(&window_1,BTN_ID_0,"OK");
+	
+		UG_WINDOW window_1;
+		UG_BUTTON button_1;
+		UG_BUTTON button_2;
+		UG_BUTTON button_3;
+		UG_TEXTBOX textbox_1;
+		UG_OBJECT obj_buff_wnd_1[10];
+	
+	  UG_WindowCreate(&window_1,obj_buff_wnd_1,10,window_1_callback);
+		/* Modify the window t i t l e */
+		UG_WindowSetTitleText ( &window_1 , "uGUI Demo Window" ) ;
+		UG_WindowSetTitleTextFont ( &window_1 , &FONT_12X20 ) ;
+		/* Create some buttons */
+		UG_ButtonCreate ( &window_1 , &button_1 , BTN_ID_0 , 10 , 10 , 110 , 60 ) ;
+		UG_ButtonCreate ( &window_1 , &button_2 , BTN_ID_1 , 10 , 80 , 110 , 130 ) ;
+		UG_ButtonCreate ( &window_1 , &button_3 , BTN_ID_2 , 10 , 150 , 110 , 200 ) ;
+		/* Label the buttons */
+		UG_ButtonSetFont ( &window_1 , BTN_ID_0 , &FONT_12X20 ) ;
+		UG_ButtonSetText ( &window_1 , BTN_ID_0 , "BtnA" ) ;
+		UG_ButtonSetFont ( &window_1 , BTN_ID_1 , &FONT_12X20 ) ;
+		UG_ButtonSetText ( &window_1 , BTN_ID_1 , "BtnB" ) ;
+		UG_ButtonSetFont ( &window_1 , BTN_ID_2 , &FONT_12X20 ) ;
+		UG_ButtonSetText ( &window_1 , BTN_ID_2 , "BtnC" ) ;
+		/* Create a Textbox */
+		UG_TextboxCreate ( &window_1 , &textbox_1 , TXB_ID_0 , 120 , 10 , 310 , 200 ) ;
+		UG_TextboxSetFont ( &window_1 , TXB_ID_0 , &FONT_8X14 ) ;
+		UG_TextboxSetText ( &window_1 , TXB_ID_0 ,"Hi Everyone:\nMy name is \nWangQingQiang\nThis is the test\n of UGUI\nOK,Bye" ) ;
+		UG_TextboxSetForeColor ( &window_1 , TXB_ID_0 , C_BLACK ) ;
+		UG_TextboxSetAlignment ( &window_1 , TXB_ID_0 , ALIGN_TOP_LEFT ) ;
+		UG_TextboxSetHSpace(&window_1,TXB_ID_0,0);
 	
 	UG_WindowShow(&window_1);
+	
+	
 	
  	while(1)
 	{
@@ -219,7 +232,6 @@ void main_task(void *pdata)
 		delay_ms(1000);	 
 		LED3_STATE = 1;
 		delay_ms(1000);
-		//printf("This is Main task\r\n");
 	}
 }		   
 
@@ -232,6 +244,5 @@ void key_task(void *pdata)
 		delay_ms(1000);	 
 		LED4_STATE = 1;
 		delay_ms(1000);
-		//printf("This is Key task\r\n");
 	}
 }

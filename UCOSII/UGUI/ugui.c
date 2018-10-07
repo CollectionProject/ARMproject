@@ -5307,7 +5307,7 @@ void UG_Update( void )
 void UG_WaitForUpdate( void )
 {
    gui->state |= UG_SATUS_WAIT_FOR_UPDATE;
-   while ( (volatile UG_U8)gui->state & UG_SATUS_WAIT_FOR_UPDATE ){};
+   while ( (volatile UG_U8)gui->state & UG_SATUS_WAIT_FOR_UPDATE ){OSTimeDly(1);};
 }
 
 void UG_DrawBMP( UG_S16 xp, UG_S16 yp, UG_BMP* bmp )

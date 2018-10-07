@@ -15,23 +15,62 @@ void draw_point(short x,short y,UG_COLOR color)
 	LCD_SetPoint(y,x,RGB_888toRGB_565(color));
 }
 
+#define MAX_OBJECTS 10
+
+void window_1_callback(UG_MESSAGE *msg)
+{
+	
+}
+
 int main(void)
 { 
+		UG_WINDOW window_1;
+		UG_BUTTON button_1;
+		UG_BUTTON button_2;
+		UG_BUTTON button_3;
+		UG_TEXTBOX textbox_1;
+		UG_OBJECT obj_buff_wnd_1[MAX_OBJECTS];
+	
     /* 注意串口2使用Printf时"SZ_STM32F107VC_LIB.c"文件中fputc定义中设备改为SZ_STM32_COM2 */
     SZ_STM32_COMInit(COM2, 115200);
 
-    /* 初始化系统定时器SysTick,每秒中断1000次 */
-    SZ_STM32_SysTickInit(1000);
+    
 
     /* TFT-LCD初始化 */	
     SZ_STM32_LCDInit();
 	
 	  UG_Init(&gui,draw_point,320,240);
-		UG_FontSelect(&FONT_6X8);
-		UG_FillScreen(C_YELLOW);
-		UG_SetForecolor(C_WHITE);
-		UG_SetBackcolor(C_BLUE);
-		UG_PutString(0,0,"hello world!!!");
+	
+		/* 初始化系统定时器SysTick,每秒中断1000次 */
+    
+		// . . .
+		/* Create the window */
+		UG_WindowCreate ( &window_1 , obj_buff_wnd_1 , MAX_OBJECTS, window_1_callback ) ;
+		/* Modify the window t i t l e */
+		UG_WindowSetTitleText ( &window_1 , "uGUI Demo Window" ) ;
+		UG_WindowSetTitleTextFont ( &window_1 , &FONT_12X20 ) ;
+		/* Create some buttons */
+		UG_ButtonCreate ( &window_1 , &button_1 , BTN_ID_0 , 10 , 10 , 110 , 60 ) ;
+		UG_ButtonCreate ( &window_1 , &button_2 , BTN_ID_1 , 10 , 80 , 110 , 130 ) ;
+		UG_ButtonCreate ( &window_1 , &button_3 , BTN_ID_2 , 10 , 150 , 110 , 200 ) ;
+		/* Label the buttons */
+		UG_ButtonSetFont ( &window_1 , BTN_ID_0 , &FONT_12X20 ) ;
+		UG_ButtonSetText ( &window_1 , BTN_ID_0 , "Button nnA" ) ;
+		UG_ButtonSetFont ( &window_1 , BTN_ID_1 , &FONT_12X20 ) ;
+		UG_ButtonSetText ( &window_1 , BTN_ID_1 , "Button nnB" ) ;
+		UG_ButtonSetFont ( &window_1 , BTN_ID_2 , &FONT_12X20 ) ;
+		UG_ButtonSetText ( &window_1 , BTN_ID_2 , "Button nnC" ) ;
+		/* Create a Textbox */
+		UG_TextboxCreate ( &window_1 , &textbox_1 , TXB_ID_0 , 120 , 10 , 310 , 200 ) ;
+		UG_TextboxSetFont ( &window_1 , TXB_ID_0 , &FONT_12X16 ) ;
+		UG_TextboxSetText ( &window_1 , TXB_ID_0 ,"Hello world!!!" ) ;
+		UG_TextboxSetForeColor ( &window_1 , TXB_ID_0 , C_BLACK ) ;
+		UG_TextboxSetAlignment ( &window_1 , TXB_ID_0 , ALIGN_CENTER ) ;
+		/* Fin ally , show the window */
+		UG_WindowShow( &window_1 ) ;
+		// . . .
+		//UG_Update();
+		SZ_STM32_SysTickInit(1000);
 }
 
 
@@ -45,16 +84,9 @@ void SysTick_Handler_User(void)
 {
     static uint32_t TimeIncrease = 0;
 
-    if((TimeIncrease%100) == 0)
+    if((TimeIncrease%1000) == 0)
     {
-        if((TimeIncrease%2000) == 0) //每2秒亮100毫秒
-        {
-            LED4OBB = 0;
-        }
-        else
-        {
-            LED4OBB = 1;
-        }
+        UG_Update();
     }
     TimeIncrease++;
 	
