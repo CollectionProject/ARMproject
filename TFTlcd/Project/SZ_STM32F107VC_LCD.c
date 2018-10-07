@@ -522,17 +522,17 @@ void LCD_Setup(void)
         LCD_DEBUG_PRINTF("\n\r ###### Err: Unknow DeviceIdCode 0x%x ###### ", DeviceIdCode);
     }
 
-    LCD_Clear(LCD_COLOR_GREEN);
+    LCD_Clear(LCD_COLOR_BLUE);
 
-//    /* 设置LCD的前景色和背景色 */
+    /* 设置LCD的前景色和背景色 */
 //    LCD_SetTextColor(LCD_COLOR_YELLOW);
 //    LCD_SetBackColor(LCD_COLOR_RED);
 //
 //    /* 设置默认字体 Setups the default font */
-//    LCD_SetFont(&Font16x24);    
-//    LCD_DisplayStringLine(LCD_LINE_5, (uint8_t *)LogoStr);
-//    LCD_DisplayStringLine(LCD_LINE_6, (uint8_t *)Devicestr);
-//    LCD_DisplayWelcomeStr(LCD_LINE_3);
+//   LCD_SetFont(&Font16x24);    
+ //  LCD_DisplayStringLine(LCD_LINE_5, (uint8_t *)"welcome");
+   //LCD_DisplayStringLine(LCD_LINE_6, (uint8_t *)Devicestr);
+ //  LCD_DisplayWelcomeStr(LCD_LINE_3);
 //    
 //    /* LCD显示一个灰度二值图片，理解这个函数是理解中英文显示的基础 */
 //    LCD_Image2LcdDrawMonoBinaryPic(2, 2, (const uint8_t *)gImage_ST_ICON);
@@ -1689,21 +1689,17 @@ void LCD_ClearLine(uint16_t Line)
   */
 void LCD_DrawChar(uint16_t Xpos, uint16_t Ypos, const uint8_t *cpFontArray)
 {
-    uint32_t index = 0, i = 0, j = 0, k = 0, y;
+     uint32_t index = 0, i = 0, j = 0, k = 0, y;
     uint8_t Xaddress = 0;
-/**************** Armjishu.com Add { *************************************/
-	uint32_t  Width = 24;
-	uint32_t  Height = 48;
-	uint32_t  BytesPreChar = 144;
-/**************** Armjishu.com Add } *************************************/	 
+
     Xaddress = Xpos;
 
     LCD_SetCursor(Xaddress, Ypos);
 
-    for(y = 0; y < Height; y++)
+    for(y = 0; y < LCD_Currentfonts->Height; y++)
     {
-        LCD_WriteRAM_Prepare(); 
-        for(i = Width; i > 0;)
+        LCD_WriteRAM_Prepare(); /* Prepare to write GRAM *///putchar('\r');putchar('\n');
+        for(i = LCD_Currentfonts->Width; i > 0;)
         {
             if(i>=8)
             {
@@ -1713,19 +1709,18 @@ void LCD_DrawChar(uint16_t Xpos, uint16_t Ypos, const uint8_t *cpFontArray)
             {
                 k = i;
             }
-						
+
             for(j = 0; j < k; j++)
             {
                 if((cpFontArray[index] & (0x80 >> j)) == 0x00)
                 {
-										
                     if(HyalineBack == HyalineBackDis)
                     {
                         LCD_WriteRAM(BackColor); //putchar(' ');
                     }
                     else
                     {
-                        LCD_SetCursor(Xaddress, Ypos+(Width - i)+1);
+                        LCD_SetCursor(Xaddress, Ypos+(LCD_Currentfonts->Width - i)+1);
                         LCD_WriteRAM_Prepare();
                     }
                 }
@@ -1734,7 +1729,7 @@ void LCD_DrawChar(uint16_t Xpos, uint16_t Ypos, const uint8_t *cpFontArray)
                     LCD_WriteRAM(TextColor); //putchar('*');
                 }
                 i--;
-                //Delay(20);//此处加延迟可以清楚的看到组成字符的一个个的点绘制过程
+                //delay_ms(100);//此处加延迟可以清楚的看到组成字符的一个个的点绘制过程
             }
             index++;
         }   
@@ -1742,8 +1737,6 @@ void LCD_DrawChar(uint16_t Xpos, uint16_t Ypos, const uint8_t *cpFontArray)
         Xaddress++;
         LCD_SetCursor(Xaddress, Ypos);
     }
-		printf("###### index:%d ######\r\n", index);
-    //putchar('\r');putchar('\n');
 }
 
 /**
@@ -1757,8 +1750,9 @@ void LCD_DrawChar(uint16_t Xpos, uint16_t Ypos, const uint8_t *cpFontArray)
   */
 void LCD_DisplayChar(uint16_t Line, uint16_t Column, uint8_t Ascii)
 {
-
-//    LCD_DrawChar(Line, Column, &LCD_Currentfonts->table[0]);
+    Ascii -= 32;
+    LCD_DrawChar(Line, Column, &LCD_Currentfonts->table[Ascii * LCD_Currentfonts->BytesPreChar]);
+    //LCD_DrawChar(Line, Column, &LCD_Currentfonts->table[0]);
 }
 
 

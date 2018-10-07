@@ -113,13 +113,14 @@ int main(void)
 	SZ_STM32_LCDInit();
 	//BEEP_Init();
 
-	UG_Init(&gui , UserPixelSetFunction , 240 , 320) ;
+	//UG_Init(&gui , UserPixelSetFunction , 240 , 320) ;
 
 	LED_Init(LED1);
 	LED_Init(LED2);
 	LED_Init(LED3);
 	LED_Init(LED4);
 
+	LCD_DisplayStringLine(LCD_LINE_0,(u8 *)"welcome");
 	
 // 	printf("\n file system starting! \n");
 // 	SD_Init();
@@ -143,7 +144,7 @@ void start_task(void *pdata)
  	OS_ENTER_CRITICAL();				//进入临界区(无法被中断打断)    
  	OSTaskCreate(led_task,(void *)0,(OS_STK*)&LED_TASK_STK[LED_STK_SIZE-1],LED_TASK_PRIO);						   
  	OSTaskCreate(touch_task,(void *)0,(OS_STK*)&TOUCH_TASK_STK[TOUCH_STK_SIZE-1],TOUCH_TASK_PRIO);	 				   		   
- 	OSTaskCreate(main_task,(void *)0,(OS_STK*)&MAIN_TASK_STK[MAIN_STK_SIZE-1],MAIN_TASK_PRIO);	 							   
+ 	//OSTaskCreate(main_task,(void *)0,(OS_STK*)&MAIN_TASK_STK[MAIN_STK_SIZE-1],MAIN_TASK_PRIO);	 							   
  	OSTaskCreate(key_task,(void *)0,(OS_STK*)&KEY_TASK_STK[KEY_STK_SIZE-1],KEY_TASK_PRIO);	 				   
  	OSTaskSuspend(START_TASK_PRIO);		//挂起起始任务.
 	OS_EXIT_CRITICAL();					//退出临界区(可以被中断打断)

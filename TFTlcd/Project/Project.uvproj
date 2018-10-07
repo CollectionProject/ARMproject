@@ -571,6 +571,16 @@
         <Group>
           <GroupName>Doc</GroupName>
         </Group>
+        <Group>
+          <GroupName>ugui</GroupName>
+          <Files>
+            <File>
+              <FileName>ugui.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\ugui.c</FilePath>
+            </File>
+          </Files>
+        </Group>
       </Groups>
     </Target>
   </Targets>
