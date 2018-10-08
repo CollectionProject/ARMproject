@@ -105,6 +105,7 @@ int main(void)
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);//设置中断优先级分组为组2：2位抢占优先级，2位响应优先级
 	uart_init(115200);	 	//串口初始化为115200
 	SZ_STM32_LCDInit();
+	SZ_TS_Init();
 	//BEEP_Init();
 
 	UG_Init(&gui , UserPixelSetFunction , 320 , 240) ;
@@ -114,14 +115,6 @@ int main(void)
 	LED_Init(LED2);
 	LED_Init(LED3);
 	LED_Init(LED4);
-	
-// 	printf("\n file system starting! \n");
-// 	SD_Init();
-// 	SD_GetCardInfo(&cardinfo);
-// 	disk_initialize(0);
-// 	f_mount(0, &fs);
-	//LCD_Clear(rgb_24_2_565(C_BLUE));
-	//UG_FillScreen(C_RED);
 	
 	OSInit();  	 				//初始化UCOSII
 		OSTaskCreate(start_task,(void *)0,(OS_STK *)&START_TASK_STK[START_STK_SIZE-1],START_TASK_PRIO );//创建起始任务
@@ -149,9 +142,9 @@ void led_task(void *pdata)
 	while(1)
 	{
 		LED1_STATE = 0;
-		delay_ms(200);	 
+		delay_ms(10);	 
 		LED1_STATE = 1;
-		delay_ms(200);
+		delay_ms(10);
 		UG_Update();
 	}									 
 }
@@ -177,6 +170,20 @@ void window_1_callback(UG_MESSAGE* msg)
 			{
 				case BTN_ID_0:
 				{
+					UG_ConsoleSetForecolor(C_WHEAT);
+					UG_ConsolePutString("button A touched\n");
+					break;
+				}
+				case BTN_ID_1:
+				{
+					UG_ConsoleSetForecolor(C_GREEN);
+					UG_ConsolePutString("button B touched\n");
+					break;
+				}
+				case BTN_ID_2:
+				{
+					UG_ConsoleSetForecolor(C_RED);
+					UG_ConsolePutString("button C touched\n");
 					break;
 				}
 			}
@@ -188,10 +195,6 @@ void window_1_callback(UG_MESSAGE* msg)
 //主任务
 void main_task(void *pdata)
 {							 		
-
-	
-	
-	
 		UG_WINDOW window_1;
 		UG_BUTTON button_1;
 		UG_BUTTON button_2;
@@ -215,12 +218,12 @@ void main_task(void *pdata)
 		UG_ButtonSetFont ( &window_1 , BTN_ID_2 , &FONT_12X20 ) ;
 		UG_ButtonSetText ( &window_1 , BTN_ID_2 , "BtnC" ) ;
 		/* Create a Textbox */
-		UG_TextboxCreate ( &window_1 , &textbox_1 , TXB_ID_0 , 120 , 10 , 310 , 200 ) ;
-		UG_TextboxSetFont ( &window_1 , TXB_ID_0 , &FONT_8X14 ) ;
-		UG_TextboxSetText ( &window_1 , TXB_ID_0 ,"Hi Everyone:\nMy name is \nWangQingQiang\nThis is the test\n of UGUI\nOK,Bye" ) ;
-		UG_TextboxSetForeColor ( &window_1 , TXB_ID_0 , C_BLACK ) ;
-		UG_TextboxSetAlignment ( &window_1 , TXB_ID_0 , ALIGN_TOP_LEFT ) ;
-		UG_TextboxSetHSpace(&window_1,TXB_ID_0,0);
+// 		UG_TextboxCreate ( &window_1 , &textbox_1 , TXB_ID_0 , 120 , 10 , 310 , 200 ) ;
+// 		UG_TextboxSetFont ( &window_1 , TXB_ID_0 , &FONT_8X14 ) ;
+// 		UG_TextboxSetText ( &window_1 , TXB_ID_0 ,"Hi Everyone:\nMy name is \nWangQingQiang\nThis is the test\n of UGUI\nOK,Bye" ) ;
+// 		UG_TextboxSetForeColor ( &window_1 , TXB_ID_0 , C_BLACK ) ;
+// 		UG_TextboxSetAlignment ( &window_1 , TXB_ID_0 , ALIGN_TOP_LEFT ) ;
+// 		UG_TextboxSetHSpace(&window_1,TXB_ID_0,0);
 	
 	UG_WindowShow(&window_1);
 	
@@ -238,11 +241,21 @@ void main_task(void *pdata)
 //按键扫描任务
 void key_task(void *pdata)
 {	
+	UG_FontSelect(&FONT_8X14);
+	UG_ConsoleSetArea(120,30,310,200);
+	UG_ConsoleSetBackcolor(C_BLUE_VIOLET);
 	while(1)
 	{
-		LED4_STATE = 0;
-		delay_ms(1000);	 
-		LED4_STATE = 1;
-		delay_ms(1000);
+		SZ_TS_Read();
+		if(touch_done==1)
+		{
+			UG_TouchUpdate(TSC_Value_X,TSC_Value_Y,TOUCH_STATE_PRESSED);
+			touch_done = 0;
+		}
+		else
+		{
+			UG_TouchUpdate(-1,-1,TOUCH_STATE_RELEASED);
+		}
+		delay_ms(10);	 
 	}
 }
