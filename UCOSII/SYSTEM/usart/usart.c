@@ -1,5 +1,6 @@
 #include "sys.h"
 #include "usart.h"	  
+#include "ADB.h"
 ////////////////////////////////////////////////////////////////////////////////// 	 
 //如果使用ucos,则包括下面的头文件即可.
 #if SYSTEM_SUPPORT_OS
@@ -61,7 +62,8 @@ u8 USART_RX_BUF[USART_REC_LEN];     //接收缓冲,最大USART_REC_LEN个字节.
 //bit14，	接收到0x0d
 //bit13~0，	接收到的有效字节数目
 u16 USART_RX_STA=0;       //接收状态标记	  
-  
+
+u8 is_New = 1;
 void uart_init(u32 bound){
   //GPIO端口设置
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -105,36 +107,77 @@ void uart_init(u32 bound){
   USART_Cmd(USART2, ENABLE);                    //使能串口1 
 
 }
+extern OS_EVENT *ADB_Q;
+static u8 adb_sendbuf[50];
+static u8 fsm=adb_start;
+static u8 adb_data_cnt=0;
 
 void USART2_IRQHandler(void)                	//串口1中断服务程序
-	{
+{
 	u8 Res;
 #if SYSTEM_SUPPORT_OS 		//如果SYSTEM_SUPPORT_OS为真，则需要支持OS.
 	OSIntEnter();    
 #endif
 	if(USART_GetITStatus(USART2, USART_IT_RXNE) != RESET)  //接收中断(接收到的数据必须是0x0d 0x0a结尾)
-		{
+	{
 		Res =USART_ReceiveData(USART2);	//读取接收到的数据
-		
-		if((USART_RX_STA&0x8000)==0)//接收未完成
-			{
-			if(USART_RX_STA&0x4000)//接收到了0x0d
+		if(is_New)
+		{
+			is_New = 0;
+			fsm = adb_start;
+			adb_data_cnt = 0;
+		}
+		switch(fsm)
+		{
+			case adb_start:
+				if(Res==0x2b)
 				{
-				if(Res!=0x0a)USART_RX_STA=0;//接收错误,重新开始
-				else USART_RX_STA|=0x8000;	//接收完成了 
+					adb_sendbuf[adb_data_cnt++] = 0x2B;
+					fsm=adb_length;
 				}
-			else //还没收到0X0D
-				{	
-				if(Res==0x0d)USART_RX_STA|=0x4000;
+				break;
+			case adb_length:
+				adb_sendbuf[adb_data_cnt++] = Res;
+				fsm=adb_id;
+				break;
+			case adb_id:
+				adb_sendbuf[adb_data_cnt++] = Res;
+				fsm=adb_ack_nack;
+				break;
+			case adb_ack_nack:
+				adb_sendbuf[adb_data_cnt++] = Res;
+				fsm=adb_enc_flag;
+				break;
+			case adb_enc_flag:
+				adb_sendbuf[adb_data_cnt++] = Res;
+				fsm=adb_index;
+				break;
+			case adb_index:
+				adb_sendbuf[adb_data_cnt++] = Res;
+				fsm=adb_data;
+				break;
+			case adb_data:
+				if(adb_data_cnt<(adb_sendbuf[1]-2))
+				{
+					adb_sendbuf[adb_data_cnt++] = Res;
+					fsm=adb_data;
+				}
 				else
-					{
-					USART_RX_BUF[USART_RX_STA&0X3FFF]=Res ;
-					USART_RX_STA++;
-					if(USART_RX_STA>(USART_REC_LEN-1))USART_RX_STA=0;//接收数据错误,重新开始接收	  
-					}		 
+				{
+					adb_sendbuf[adb_data_cnt++] = Res;
+					fsm=adb_crc;
 				}
-			}   		 
-     } 
+				break;
+			case adb_crc:
+				adb_sendbuf[adb_data_cnt++] = Res;
+				OSQPost(ADB_Q,adb_sendbuf);	//发送队列  
+				fsm=adb_idel;
+				break;
+			case adb_idel:
+				fsm=adb_idel;
+				break;
+		}
+	 } 
 #if SYSTEM_SUPPORT_OS 	//如果SYSTEM_SUPPORT_OS为真，则需要支持OS.
 	OSIntExit();  											 
 #endif

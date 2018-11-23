@@ -12,6 +12,7 @@
 #include "diskio.h"
 #include "sdcard.h"
 #include "ugui.h"
+#include "ADB.h"
 
 /* ------------------file------------------------ */
 FATFS fs;            // Work area (file system object) for logical drive
@@ -22,6 +23,10 @@ UINT br, bw;         // File R/W count
 
 UG_GUI gui ; // Global GUI structure
 
+#define ADB_MUTEX_PRIO 3
+OS_EVENT *ADB_MUTEX;
+OS_EVENT *ADB_Q;
+void * MsgGrp[256];			//消息队列存储地址,最大支持256个消息
 /////////////////////////UCOSII任务设置///////////////////////////////////
 //START 任务
 //设置任务优先级
@@ -103,25 +108,18 @@ int main(void)
 	
 	delay_init();	    	 //延时函数初始化	  
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);//设置中断优先级分组为组2：2位抢占优先级，2位响应优先级
-	uart_init(115200);	 	//串口初始化为115200
+	uart_init(9600);	 	//串口初始化为115200
 	SZ_STM32_LCDInit();
+	//SZ_TS_Init();
 	//BEEP_Init();
 
-	UG_Init(&gui , UserPixelSetFunction , 320 , 240) ;
-	UG_FontSetHSpace(0);
-	UG_FontSetVSpace(0);
+	//UG_Init(&gui , UserPixelSetFunction , 320 , 240) ;
+	//UG_FontSetHSpace(0);
+	//UG_FontSetVSpace(0);
 	LED_Init(LED1);
 	LED_Init(LED2);
 	LED_Init(LED3);
 	LED_Init(LED4);
-	
-// 	printf("\n file system starting! \n");
-// 	SD_Init();
-// 	SD_GetCardInfo(&cardinfo);
-// 	disk_initialize(0);
-// 	f_mount(0, &fs);
-	//LCD_Clear(rgb_24_2_565(C_BLUE));
-	//UG_FillScreen(C_RED);
 	
 	OSInit();  	 				//初始化UCOSII
 		OSTaskCreate(start_task,(void *)0,(OS_STK *)&START_TASK_STK[START_STK_SIZE-1],START_TASK_PRIO );//创建起始任务
@@ -131,14 +129,17 @@ int main(void)
 //开始任务
 void start_task(void *pdata)
 {
-  OS_CPU_SR cpu_sr=0;    	    
+  OS_CPU_SR cpu_sr=0;    	 
+	u8 err;	
 	pdata = pdata; 	
 	
+	ADB_Q = OSQCreate(&MsgGrp[0],256);
+	ADB_MUTEX=OSMutexCreate(ADB_MUTEX_PRIO,&err);
  	OS_ENTER_CRITICAL();				//进入临界区(无法被中断打断)    
- 	OSTaskCreate(led_task,(void *)0,(OS_STK*)&LED_TASK_STK[LED_STK_SIZE-1],LED_TASK_PRIO);						   
+ 	//OSTaskCreate(led_task,(void *)0,(OS_STK*)&LED_TASK_STK[LED_STK_SIZE-1],LED_TASK_PRIO);						   
  	OSTaskCreate(touch_task,(void *)0,(OS_STK*)&TOUCH_TASK_STK[TOUCH_STK_SIZE-1],TOUCH_TASK_PRIO);	 				   		   
- 	OSTaskCreate(main_task,(void *)0,(OS_STK*)&MAIN_TASK_STK[MAIN_STK_SIZE-1],MAIN_TASK_PRIO);	 							   
- 	OSTaskCreate(key_task,(void *)0,(OS_STK*)&KEY_TASK_STK[KEY_STK_SIZE-1],KEY_TASK_PRIO);	 				   
+ 	//OSTaskCreate(main_task,(void *)0,(OS_STK*)&MAIN_TASK_STK[MAIN_STK_SIZE-1],MAIN_TASK_PRIO);	 							   
+ 	//OSTaskCreate(key_task,(void *)0,(OS_STK*)&KEY_TASK_STK[KEY_STK_SIZE-1],KEY_TASK_PRIO);	
  	OSTaskSuspend(START_TASK_PRIO);		//挂起起始任务.
 	OS_EXIT_CRITICAL();					//退出临界区(可以被中断打断)
 	
@@ -149,22 +150,43 @@ void led_task(void *pdata)
 	while(1)
 	{
 		LED1_STATE = 0;
-		delay_ms(200);	 
+		delay_ms(1000);	 
 		LED1_STATE = 1;
-		delay_ms(200);
-		UG_Update();
+		delay_ms(1000);
+		//printf("This task is LED Task\r\n");
+		//UG_Update();
 	}									 
 }
 //触摸屏任务
 void touch_task(void *pdata)
 {	  	
-		while(1)
+	volatile int adb_r_res = 0;
+	while(1)
+	{
+		adb_r_res = ADB_authenticate_begin(18,10,21,16,13,38);
+		if(adb_r_res!=adb_auth_begin_success)
 		{
 			LED2_STATE = 0;
-			delay_ms(1000);	 
+			delay_ms(50);	 
 			LED2_STATE = 1;
-			delay_ms(1000);
+			delay_ms(50);
+			LED2_STATE = 0;
+			delay_ms(50);	 
+			LED2_STATE = 1;
+			delay_ms(50);
 		}
+		else
+		{
+			LED2_STATE = 0;
+			delay_ms(500);	 
+			LED2_STATE = 1;
+			delay_ms(500);
+			LED2_STATE = 0;
+			delay_ms(500);	 
+			LED2_STATE = 1;
+			delay_ms(500);
+		}
+	}
 }     
    	
 void window_1_callback(UG_MESSAGE* msg)
@@ -177,6 +199,20 @@ void window_1_callback(UG_MESSAGE* msg)
 			{
 				case BTN_ID_0:
 				{
+					UG_ConsoleSetForecolor(C_WHEAT);
+					UG_ConsolePutString("button A touched\n");
+					break;
+				}
+				case BTN_ID_1:
+				{
+					UG_ConsoleSetForecolor(C_GREEN);
+					UG_ConsolePutString("button B touched\n");
+					break;
+				}
+				case BTN_ID_2:
+				{
+					UG_ConsoleSetForecolor(C_RED);
+					UG_ConsolePutString("button C touched\n");
 					break;
 				}
 			}
@@ -188,15 +224,11 @@ void window_1_callback(UG_MESSAGE* msg)
 //主任务
 void main_task(void *pdata)
 {							 		
-
-	
-	
-	
 		UG_WINDOW window_1;
 		UG_BUTTON button_1;
 		UG_BUTTON button_2;
 		UG_BUTTON button_3;
-		UG_TEXTBOX textbox_1;
+//		UG_TEXTBOX textbox_1;
 		UG_OBJECT obj_buff_wnd_1[10];
 	
 	  UG_WindowCreate(&window_1,obj_buff_wnd_1,10,window_1_callback);
@@ -215,12 +247,12 @@ void main_task(void *pdata)
 		UG_ButtonSetFont ( &window_1 , BTN_ID_2 , &FONT_12X20 ) ;
 		UG_ButtonSetText ( &window_1 , BTN_ID_2 , "BtnC" ) ;
 		/* Create a Textbox */
-		UG_TextboxCreate ( &window_1 , &textbox_1 , TXB_ID_0 , 120 , 10 , 310 , 200 ) ;
-		UG_TextboxSetFont ( &window_1 , TXB_ID_0 , &FONT_8X14 ) ;
-		UG_TextboxSetText ( &window_1 , TXB_ID_0 ,"Hi Everyone:\nMy name is \nWangQingQiang\nThis is the test\n of UGUI\nOK,Bye" ) ;
-		UG_TextboxSetForeColor ( &window_1 , TXB_ID_0 , C_BLACK ) ;
-		UG_TextboxSetAlignment ( &window_1 , TXB_ID_0 , ALIGN_TOP_LEFT ) ;
-		UG_TextboxSetHSpace(&window_1,TXB_ID_0,0);
+// 		UG_TextboxCreate ( &window_1 , &textbox_1 , TXB_ID_0 , 120 , 10 , 310 , 200 ) ;
+// 		UG_TextboxSetFont ( &window_1 , TXB_ID_0 , &FONT_8X14 ) ;
+// 		UG_TextboxSetText ( &window_1 , TXB_ID_0 ,"Hi Everyone:\nMy name is \nWangQingQiang\nThis is the test\n of UGUI\nOK,Bye" ) ;
+// 		UG_TextboxSetForeColor ( &window_1 , TXB_ID_0 , C_BLACK ) ;
+// 		UG_TextboxSetAlignment ( &window_1 , TXB_ID_0 , ALIGN_TOP_LEFT ) ;
+// 		UG_TextboxSetHSpace(&window_1,TXB_ID_0,0);
 	
 	UG_WindowShow(&window_1);
 	
@@ -238,11 +270,21 @@ void main_task(void *pdata)
 //按键扫描任务
 void key_task(void *pdata)
 {	
+	UG_FontSelect(&FONT_8X14);
+	UG_ConsoleSetArea(120,30,310,200);
+	UG_ConsoleSetBackcolor(C_BLUE_VIOLET);
 	while(1)
 	{
-		LED4_STATE = 0;
-		delay_ms(1000);	 
-		LED4_STATE = 1;
-		delay_ms(1000);
+		SZ_TS_Read();
+		if(touch_done==1)
+		{
+			UG_TouchUpdate(TSC_Value_X,TSC_Value_Y,TOUCH_STATE_PRESSED);
+			touch_done = 0;
+		}
+		else
+		{
+			UG_TouchUpdate(-1,-1,TOUCH_STATE_RELEASED);
+		}
+		delay_ms(10);	 
 	}
 }

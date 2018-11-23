@@ -112,19 +112,19 @@ void LCD_Setup(void)
     delay_ms(50); /* Delay 50 ms */
     DeviceIdCode = LCD_ReadReg(0x0000);
     DeviceIdCode = LCD_ReadReg(0x0000);
-    LCD_DEBUG_PRINTF("\n\r ###### www.armjishu.com DeviceIdCode = 0x%x ###### ", DeviceIdCode);
+    //LCD_DEBUG_PRINTF("\n\r ###### www.armjishu.com DeviceIdCode = 0x%x ###### ", DeviceIdCode);
 
     delay_ms(50); /* Delay 50 ms */            //start internal osc
 
     if(DeviceIdCode == 0x8999)
     {
 			DeviceIdCode = 0x8989;
-        LCD_DEBUG_PRINTF("\n\r This LCD is SSD1289 ");
+        //LCD_DEBUG_PRINTF("\n\r This LCD is SSD1289 ");
     }
 
     if(DeviceIdCode == 0x9325)
     {
-        LCD_DEBUG_PRINTF("\n\r This LCD is ili9325 ");
+        //LCD_DEBUG_PRINTF("\n\r This LCD is ili9325 ");
     }
   
     if(DeviceIdCode==0x9325||DeviceIdCode==0x9328)

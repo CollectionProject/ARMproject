@@ -230,7 +230,7 @@ void SZ_TS_Read(void)
         //printf("\n\r%d,%d", xScreen, yScreen);
         if((TS_INT_VALID) && distence(sDataX,xScreen) && distence(sDataY,yScreen))
         {
-						delay_ms(25);
+						delay_ms(15);
 						if((TS_INT_VALID) && distence(sDataX,xScreen) && distence(sDataY,yScreen))
 						{
 								//LCD_BigPoint(yScreen, xScreen);
@@ -251,9 +251,6 @@ void SZ_TS_Read(void)
 void SZ_TS_Init(void)
 {
     TS_GPIO_Config();
-    TS_CS_HIGH();
-    
-    //TS_INT_config();
-    
+    TS_CS_HIGH();   
     TS_SPI_Config();
 }
