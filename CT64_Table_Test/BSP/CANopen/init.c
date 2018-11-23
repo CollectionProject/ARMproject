@@ -75,18 +75,30 @@
 #include <objdictdef.h>
 #include <objacces.h>
 #include <init.h>
+<<<<<<< HEAD
 #include <lifegrd.h>
 #include "sdo.h"
 #include "ucos_ii.h"
 //#include "RTL.h"
+=======
+#include <lifegrd.h>
+#include "sdo.h"
+#include "ucos_ii.h"
+//#include "RTL.h"
+>>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
 //#include "RTX_CAN.h"
 //#include "main.h"
 
 /************** variables declaration*********************************/
 // buffer used by SDO
 extern s_transfer transfers[MAX_CAN_BUS_ID][SDO_MAX_NODE_ID];	
+<<<<<<< HEAD
 e_nodeState nodeState;
 
+=======
+e_nodeState nodeState;
+
+>>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
 extern proceed_info proceed_infos[];
 /*************************************************************************/
 
@@ -108,7 +120,11 @@ u8 getNodeId(void)
 
 u8 setNodeId(u8 nodeId)
 {
+<<<<<<< HEAD
 //  u32 ret;
+=======
+//  u32 ret;
+>>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
   u8 i;
   u32 pbData32;
   // bDeviceNodeId is defined in the object dictionary.
@@ -116,6 +132,7 @@ u8 setNodeId(u8 nodeId)
   // ** Initialize the server(s) SDO parameters
   // Remember that only one SDO server is allowed, defined at index 0x1200
   pbData32 = 0x600 + nodeId;
+<<<<<<< HEAD
   setODentry(0x1200, 1, &pbData32, 4, 0); // Subindex 1
 
   pbData32 = 0x580 + nodeId;
@@ -123,6 +140,15 @@ u8 setNodeId(u8 nodeId)
 
   // Subindex 3 : node Id client. As we do not know the value, we put the node Id Server
   setODentry(0x1200, 3, &nodeId, 1, 0);
+=======
+  setODentry(0x1200, 1, &pbData32, 4, 0); // Subindex 1
+
+  pbData32 = 0x580 + nodeId;
+  setODentry(0x1200, 2, &pbData32, 4, 0); // Subindex 2
+
+  // Subindex 3 : node Id client. As we do not know the value, we put the node Id Server
+  setODentry(0x1200, 3, &nodeId, 1, 0);
+>>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
 
   // ** Initialize the client(s) SDO parameters  
   // Nothing to initialize (no default values required by the DS 401)
@@ -212,8 +238,13 @@ u8 initPreOperationalMode(void)
   // Init the nodeguard toggle
   toggle = 0;
   return 0;
+<<<<<<< HEAD
 }
 
+=======
+}
+
+>>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
 
 /* Node mode result after NodeGuard query */
 e_nodeState stateNode(u8 node) 
@@ -221,8 +252,13 @@ e_nodeState stateNode(u8 node)
   e_nodeState state = getNodeState(0, node);
   
   return state;
+<<<<<<< HEAD
 }
 
+=======
+}
+
+>>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
 //------------------------------------------------------------------------------
 /* The master is writing in its dictionnary to configure the SDO parameters 
 to communicate with server_node
@@ -233,8 +269,13 @@ void configure_master_SDO(u32 index, u8 serverNode)
   u8 data8;
   u8 sizeData = 4 ; // in bytes
 
+<<<<<<< HEAD
   /* The master side is client, and the slave side is server */
 
+=======
+  /* The master side is client, and the slave side is server */
+
+>>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
   /* At subindex 1, the cobId of the Can message from the client
   It is always defined inside the server dictionnary as 0x6000 + server_node.
   So, we have no choice here ! */
@@ -261,15 +302,23 @@ void configure_master_SDO(u32 index, u8 serverNode)
  */
 u8 waitingWriteToSlaveDict(u8 slaveNode, u8 error)
 {
+<<<<<<< HEAD
   u8 err;
 	u16 cnt=0;
   //CAN_msg canmsg;
   //u8 fc;
+=======
+  u8 err;
+	u16 cnt=0;
+  //CAN_msg canmsg;
+  //u8 fc;
+>>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
   //Message msg_rece;
   /*  MSG_WAR(0x3F21, "Sending SDO to write in dictionnary of node : ", slaveNode); */
   if (error) {
   /*  MSG_ERR(0x1F22, "Unable to send the SDO to node ", slaveNode); */
     return 0xFF;
+<<<<<<< HEAD
   }
 	
   do
@@ -282,11 +331,29 @@ u8 waitingWriteToSlaveDict(u8 slaveNode, u8 error)
 		}
 		else
 			cnt++;
+=======
+  }
+	
+  do
+  {
+    err = getWriteResultNetworkDict(0, slaveNode);
+		OSTimeDly(5);
+		if(cnt >= 1000)
+		{
+			return 0xff;
+		}
+		else
+			cnt++;
+>>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
   }
   while (err == SDO_IN_PROGRESS);
   /*MSG_WAR(0x3F22, "OK response of Node", slaveNode); */
   /*err = getWriteResultNetworkDict(0, slaveNode);	   */
+<<<<<<< HEAD
   if (err == SDO_ABORTED) 
+=======
+  if (err == SDO_ABORTED) 
+>>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
   {
     return 0xff;
   }
@@ -310,7 +377,11 @@ u8 waitingReadToSlaveDict(u8 slaveNode, void * data, u8 * size, u8 error)
   err = getReadResultNetworkDict (0, slaveNode, data, size);
   if (err == SDO_ABORTED) {
     //s_SDOabort SDOabort;
+<<<<<<< HEAD
     //SDOabort = getSDOerror(0, slaveNode);
+=======
+    //SDOabort = getSDOerror(0, slaveNode);
+>>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
 		return 0xff;
     //SDOabort.index : The index where the read or write failure occurs
     //SDOabort.subIndex : The subIndex where the read or write failure occurs
@@ -356,7 +427,11 @@ void masterMappingPDO(u32 indexPDO, u32 cobId, s_mappedVar *tabMappedVar, u8 nbV
     MSG_WAR(0x3F30, "Configuring MASTER for PDO receive, COBID : ", cobId);
 
   if ((indexPDO >= 0x1800) && (indexPDO <= 0x19FF))
+<<<<<<< HEAD
     MSG_WAR(0x3F31, "Configuring MASTER for PDO transmit, COBID : ", cobId);
+=======
+    MSG_WAR(0x3F31, "Configuring MASTER for PDO transmit, COBID : ", cobId);
+>>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
   */
 
   /* At indexPDO, subindex 1, defining the cobId of the PDO */
@@ -374,7 +449,11 @@ void masterMappingPDO(u32 indexPDO, u32 cobId, s_mappedVar *tabMappedVar, u8 nbV
      The data to write is the concatenation on 32 bits of (msb ... lsb) : 
      index(16b),subIndex(8b),sizeVariable(8b)
 */
+<<<<<<< HEAD
   for (i = 0 ; i < nbVar ; i++) 
+=======
+  for (i = 0 ; i < nbVar ; i++) 
+>>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
   {
     data32 = ((tabMappedVar + i)->index << 16) | (((tabMappedVar + i)->subIndex & 0xFF) << 8) |	((tabMappedVar + i)->size & 0xFF);
 
@@ -393,15 +472,23 @@ void slaveMappingPDO(u8 slaveNode, u32 indexPDO, u32 cobId, s_mappedVar *tabMapp
   u32 data32; 
   u8 i;
   u8 err;
+<<<<<<< HEAD
   u8 nbBytes = 1;
 	
 	
 	OSTimeDly(5);
+=======
+  u8 nbBytes = 1;
+	
+	
+	OSTimeDly(5);
+>>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
 
   /*if ((indexPDO >= 0x1400) && (indexPDO <= 0x15FF))
     MSG_WAR(0x3F32, "Configuring slave for PDO receive, COBID : ", cobId);
 
   if ((indexPDO >= 0x1800) && (indexPDO <= 0x19FF))
+<<<<<<< HEAD
     MSG_WAR(0x3F33, "Configuring slave for PDO transmit, COBID : ", cobId);
   */
 
@@ -431,6 +518,37 @@ void slaveMappingPDO(u8 slaveNode, u32 indexPDO, u32 cobId, s_mappedVar *tabMapp
   /* At subindex 0, clear PDO mapping */
   data32 = 0x00;
   err = writeNetworkDict(0, slaveNode, indexPDO + 0x200, 0, nbBytes, &data32);
+=======
+    MSG_WAR(0x3F33, "Configuring slave for PDO transmit, COBID : ", cobId);
+  */
+
+  /* At indexPDO, subindex 1, make the RPDO disable */
+  data32 = 0x80000000+ cobId;
+  err = writeNetworkDict(0, slaveNode, indexPDO, 1, 4, &data32);
+	OSTimeDly(5);	
+  if(0xff ==waitingWriteToSlaveDict(slaveNode, err))
+	{
+		return;
+	}
+	
+// 	/* At indexPDO, subindex 1, defining the cobId of the PDO */
+//   err = writeNetworkDict(0, slaveNode, indexPDO, 1, 4, &cobId); 
+//   waitingWriteToSlaveDict(slaveNode, err);
+
+  /* Following, set the communication mode, the node send the PDO spontaneously when TPDO*/
+  /*  */
+  err = writeNetworkDict(0, slaveNode, indexPDO, 2, 1, &transType);
+	OSTimeDly(5);	
+  waitingWriteToSlaveDict(slaveNode, err);
+
+	//if(cobId == 0x381 ||cobId == 0x281)
+	{
+	/* The mapping ... */
+  /* ----------------*/
+  /* At subindex 0, clear PDO mapping */
+  data32 = 0x00;
+  err = writeNetworkDict(0, slaveNode, indexPDO + 0x200, 0, nbBytes, &data32);
+>>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
 	OSTimeDly(5);		
   waitingWriteToSlaveDict(slaveNode, err);
 
@@ -439,11 +557,16 @@ void slaveMappingPDO(u8 slaveNode, u32 indexPDO, u32 cobId, s_mappedVar *tabMapp
      The data to write is the concatenation on 32 bits of (msb ... lsb) : 
      index(16b),subIndex(8b),sizeVariable(8b)
 */
+<<<<<<< HEAD
   for (i = 0 ; i < nbVar ; i++) 
+=======
+  for (i = 0 ; i < nbVar ; i++) 
+>>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
   {
     data32 = ((tabMappedVar + i)->index << 16) | (((tabMappedVar + i)->subIndex & 0xFF) << 8) |	((tabMappedVar + i)->size & 0xFF);
 
     // Write dictionary
+<<<<<<< HEAD
     err = writeNetworkDict(0, slaveNode, indexPDO + 0x200, i + 1, 4, &data32); 
 		OSTimeDly(5);
     waitingWriteToSlaveDict(slaveNode, err);    
@@ -460,6 +583,24 @@ void slaveMappingPDO(u8 slaveNode, u32 indexPDO, u32 cobId, s_mappedVar *tabMapp
   err = writeNetworkDict(0, slaveNode, indexPDO, 1, 4, &data32);
 	OSTimeDly(5);
   waitingWriteToSlaveDict(slaveNode, err);
+=======
+    err = writeNetworkDict(0, slaveNode, indexPDO + 0x200, i + 1, 4, &data32); 
+		OSTimeDly(5);
+    waitingWriteToSlaveDict(slaveNode, err);    
+  }
+
+	/* At subindex 0, the number of variables in the PDO */
+  err = writeNetworkDict(0, slaveNode, indexPDO + 0x200, 0, nbBytes, &nbVar); 
+	OSTimeDly(5);
+  waitingWriteToSlaveDict(slaveNode, err);
+	}
+
+  /* At indexPDO, subindex 1, make the RPDO enable */
+  data32 = cobId;
+  err = writeNetworkDict(0, slaveNode, indexPDO, 1, 4, &data32);
+	OSTimeDly(5);
+  waitingWriteToSlaveDict(slaveNode, err);
+>>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
 
 }
 
@@ -575,6 +716,7 @@ void masterSYNCPeriod(u32 SYNCPeriod)
 
  /* At index 0x1006, subindex 0 : the period in ms */
  setODentry(0x1006, 0, &SYNCPeriod , 4, 0);
+<<<<<<< HEAD
 }
 
 void slaveSYNCEnable(u8 slaveNode, u32 cobId, u32 SYNCPeriod, u8 syncType)
@@ -596,5 +738,28 @@ void slaveSYNCEnable(u8 slaveNode, u32 cobId, u32 SYNCPeriod, u8 syncType)
 }
 
 
+=======
+}
+
+void slaveSYNCEnable(u8 slaveNode, u32 cobId, u32 SYNCPeriod, u8 syncType)
+{
+  u8  err;
+  u32 status;
+
+  err = writeNetworkDict(0, slaveNode, 0x1006 , 0, 4, &SYNCPeriod); 
+  waitingWriteToSlaveDict(slaveNode, err);
+	OSTimeDly(10);
+
+  if (syncType == 0)
+    status = cobId;
+  else
+    status = 0x40000000 + cobId;
+
+  err = writeNetworkDict(0, slaveNode, 0x1005 , 0, 4, &status); 
+  waitingWriteToSlaveDict(slaveNode, err);
+}
+
+
+>>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
 
 

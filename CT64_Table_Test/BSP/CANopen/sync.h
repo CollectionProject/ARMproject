@@ -56,8 +56,13 @@
  *********************************************************/
 
 #ifndef __SYNC_h__
+<<<<<<< HEAD
 #define __SYNC_h__
 
+=======
+#define __SYNC_h__
+
+>>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
 #include "CAN_Cfg.h"
 
 

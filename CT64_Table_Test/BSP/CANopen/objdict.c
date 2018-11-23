@@ -24,6 +24,7 @@ u8 bDeviceNodeId = NODE_ID;
 /* Declaration of the mapped variables                                    */
 /**************************************************************************/
 /* Computed by strDeclareMapVar */
+<<<<<<< HEAD
 u32 horiStatusWord;		// Mapped at index 0x6000, subindex 0x1
 u32 horiInputWord;  	// Mapped at index 0x6000, subindex 0x2
 u32 vertStatusWord;		// Mapped at index 0x6001, subindex 0x1
@@ -34,6 +35,18 @@ u32 canopenErrNB;		// Mapped at index 0x6003, subindex 0x1
 u32 canopenErrVAL;		// Mapped at index 0x6003, subindex 0x2
 u32 horiposition;		// Mapped at index 0x6004, subindex 0x1
 u32 horispeed;  		// Mapped at index 0x6004, subindex 0x2
+=======
+u32 horiStatusWord;		// Mapped at index 0x6000, subindex 0x1
+u32 horiInputWord;  	// Mapped at index 0x6000, subindex 0x2
+u32 vertStatusWord;		// Mapped at index 0x6001, subindex 0x1
+u32 vertInputWord;	  // Mapped at index 0x6001, subindex 0x2
+u16 horiControlWord;  // Mapped at index 0x6002, subindex 0x1
+u8  horiModeWord;     // Mapped at index 0x6002, subindex 0x2
+u32 canopenErrNB;		// Mapped at index 0x6003, subindex 0x1
+u32 canopenErrVAL;		// Mapped at index 0x6003, subindex 0x2
+u32 horiposition;		// Mapped at index 0x6004, subindex 0x1
+u32 horispeed;  		// Mapped at index 0x6004, subindex 0x2
+>>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
 u32 vertposition;		// Mapped at index 0x6005, subindex 0x1
 u32 vertspeed;  		// Mapped at index 0x6005, subindex 0x2
 
@@ -315,19 +328,32 @@ static  subindex Index ## RXPDO[] =\
 // This define the PDO receive entries from index 0x1400 to 0x1405 
 _CREATE_RXPDO_(1400)
 _CREATE_RXPDO_(1401)
+<<<<<<< HEAD
 _CREATE_RXPDO_(1402)
 _CREATE_RXPDO_(1403)
 _CREATE_RXPDO_(1404)
 _CREATE_RXPDO_(1405)
+=======
+_CREATE_RXPDO_(1402)
+_CREATE_RXPDO_(1403)
+_CREATE_RXPDO_(1404)
+_CREATE_RXPDO_(1405)
+>>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
 
 /* Create the Receive PDO Parameter area. */
 const indextable   receivePDOParameter[] =
 { 
   DeclareIndexTableEntry(Index1400),
   DeclareIndexTableEntry(Index1401),
+<<<<<<< HEAD
   DeclareIndexTableEntry(Index1402),
   DeclareIndexTableEntry(Index1403),
 	DeclareIndexTableEntry(Index1404),
+=======
+  DeclareIndexTableEntry(Index1402),
+  DeclareIndexTableEntry(Index1403),
+	DeclareIndexTableEntry(Index1404),
+>>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
 	DeclareIndexTableEntry(Index1405),
 };
 
@@ -364,7 +390,11 @@ const indextable   transmitPDOParameter[] =
 { 
   DeclareIndexTableEntry(Index1800),
   DeclareIndexTableEntry(Index1801),
+<<<<<<< HEAD
   DeclareIndexTableEntry(Index1802),
+=======
+  DeclareIndexTableEntry(Index1802),
+>>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
 	DeclareIndexTableEntry(Index1803)
 };
 
@@ -434,13 +464,21 @@ static  s_pdo_mapping_parameter RxMap ## RXMAP = \
 #define INDEX_LAST_PDO_MAPPING_RECEIVE  0x1603
 _CREATE_RXMAP_(1600)
 _CREATE_RXMAP_(1601)
+<<<<<<< HEAD
 _CREATE_RXMAP_(1602)
+=======
+_CREATE_RXMAP_(1602)
+>>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
 _CREATE_RXMAP_(1603)
 
 const indextable   RxPDOMappingTable[ ] =
 {
   DeclareIndexTableEntry(Index1600),
+<<<<<<< HEAD
   DeclareIndexTableEntry(Index1601),
+=======
+  DeclareIndexTableEntry(Index1601),
+>>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
   DeclareIndexTableEntry(Index1602),
   DeclareIndexTableEntry(Index1603)
 };
@@ -515,6 +553,7 @@ subindex Index6000[] =
   { RO, uint8, sizeof(u8), (void*)&highestSubIndex_6000 },
   { RW, uint16, sizeof (u16), (void*)&horiStatusWord },
   { RW, uint16, sizeof (u16), (void*)&horiInputWord }
+<<<<<<< HEAD
 };
 
 // /********* Index 6000 *********///modify at 2012.5.25
@@ -523,6 +562,16 @@ subindex Index6000[] =
 // {
 //   { RO, uint8, sizeof(u8), (void*)&highestSubIndex_6000 },
 //   { RW, uint16, sizeof (u16), (void*)&horiStatusWord }
+=======
+};
+
+// /********* Index 6000 *********///modify at 2012.5.25
+// static u8 highestSubIndex_6000 = 1; // number of subindex - 1
+// subindex Index6000[] = 
+// {
+//   { RO, uint8, sizeof(u8), (void*)&highestSubIndex_6000 },
+//   { RW, uint16, sizeof (u16), (void*)&horiStatusWord }
+>>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
 // };
 
 /********* Index 6001 *********/
@@ -550,8 +599,13 @@ subindex Index6003[] =
   { RO, uint8, sizeof(u8), (void*)&highestSubIndex_6003 },
   { RW, uint32, sizeof (u32), (void*)&canopenErrNB },
   { RW, uint32, sizeof (u16), (void*)&canopenErrVAL }
+<<<<<<< HEAD
 };
 
+=======
+};
+
+>>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
 /********* Index 6004 *********/
 static u8 highestSubIndex_6004 = 2; // number of subindex - 1
 subindex Index6004[] = 
@@ -559,8 +613,13 @@ subindex Index6004[] =
   { RO, uint8, sizeof(u8), (void*)&highestSubIndex_6004 },
   { RW, uint32, sizeof (u32), (void*)&horiposition },
   { RW, uint32, sizeof (u16), (void*)&horispeed }
+<<<<<<< HEAD
 };
 
+=======
+};
+
+>>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
 /********* Index 6005 *********/
 static u8 highestSubIndex_6005 = 2; // number of subindex - 1
 subindex Index6005[] = 
@@ -576,8 +635,13 @@ const indextable digitalInputTable[] =
   DeclareIndexTableEntry(Index6000),
   DeclareIndexTableEntry(Index6001),
   DeclareIndexTableEntry(Index6002),
+<<<<<<< HEAD
   DeclareIndexTableEntry(Index6003),
   DeclareIndexTableEntry(Index6004),
+=======
+  DeclareIndexTableEntry(Index6003),
+  DeclareIndexTableEntry(Index6004),
+>>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
   DeclareIndexTableEntry(Index6005)
 };
 

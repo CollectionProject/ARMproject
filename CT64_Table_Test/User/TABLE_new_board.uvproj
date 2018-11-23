@@ -44,7 +44,11 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>..\OBJ\</OutputDirectory>
+<<<<<<< HEAD
           <OutputName>CT64_Table</OutputName>
+=======
+          <OutputName>CT16_Table_Test_880_660</OutputName>
+>>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>1</CreateHexFile>

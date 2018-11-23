@@ -58,8 +58,13 @@
 
 #ifndef __pdo_h__
 #define __pdo_h__
+<<<<<<< HEAD
 
 #include "def.h"
+=======
+
+#include "def.h"
+>>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
 #include "CAN_Cfg.h"
 
 /** Transmit a PDO data frame on the bus bus_id
