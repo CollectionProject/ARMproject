@@ -275,7 +275,7 @@ u8 waitingWriteToSlaveDict(u8 slaveNode, u8 error)
   do
   {
     err = getWriteResultNetworkDict(0, slaveNode);
-		OSTimeDly(5);
+		OSTimeDly(1);
 		if(cnt >= 1000)
 		{
 			return 0xff;
