@@ -135,11 +135,7 @@
 /* Should not be modified */
 /// max bytes to transmit. Fixed in DS301
 #define SDO_MAX_DOMAIN_LEN 32    
-<<<<<<< HEAD
 //#define SDO_MAX_NODE_ID    32 
-=======
-//#define SDO_MAX_NODE_ID    32 
->>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
 #define SDO_MAX_NODE_ID    4
 /// max bytes of data in a PDO
 #define PDO_MAX_LEN        8    

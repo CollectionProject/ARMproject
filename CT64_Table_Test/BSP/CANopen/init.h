@@ -67,13 +67,8 @@ extern s_transfer transfers[MAX_CAN_BUS_ID][SDO_MAX_NODE_ID];
 /// SDO frame response is waited for
 extern WriteDic writeNetworkDictWaited[MAX_CAN_BUS_ID][SDO_MAX_NODE_ID];
 extern ReadDic  readNetworkDictWaited[MAX_CAN_BUS_ID][SDO_MAX_NODE_ID];
-<<<<<<< HEAD
 extern u8 bDeviceNodeId;
 
-=======
-extern u8 bDeviceNodeId;
-
->>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
 /* The variable to map in a PDO is defined at index and subIndex. Its length is size bytes */
 typedef struct mappedVar 
 {
@@ -104,7 +99,6 @@ u8 getNodeId (void);
 
 /** Define the node ID. Initialize the object dictionary
 */
-<<<<<<< HEAD
 u8 setNodeId (u8 nodeId);
 
 void configure_master_SDO (u32 index, u8 serverNode);
@@ -112,26 +106,13 @@ u8 configure_client_SDO (u8 slaveNode, u8 clientNode);
 void slaveSYNCEnable(u8 slaveNode, u32 cobId, u32 SYNCPeriod, u8 syncType);
 void masterMappingPDO (u32 indexPDO, u32 cobId, s_mappedVar *tabMappedVar, u8 nbVar);
 void slaveMappingPDO (u8 slaveNode, u32 indexPDO, u32 cobId, s_mappedVar *tabMappedVar, u8 nbVar, u8 transType);
-=======
-u8 setNodeId (u8 nodeId);
-
-void configure_master_SDO (u32 index, u8 serverNode);
-u8 configure_client_SDO (u8 slaveNode, u8 clientNode);
-void slaveSYNCEnable(u8 slaveNode, u32 cobId, u32 SYNCPeriod, u8 syncType);
-void masterMappingPDO (u32 indexPDO, u32 cobId, s_mappedVar *tabMappedVar, u8 nbVar);
-void slaveMappingPDO (u8 slaveNode, u32 indexPDO, u32 cobId, s_mappedVar *tabMappedVar, u8 nbVar, u8 transType);
->>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
 void masterHeartbeatConsumer (s_heartbeatConsumer *tabHeartbeatConsumer, u8 nbHeartbeats);
 void masterHeartbeatProducer (u16 time);
 void slaveHeartbeatConsumer (u8 slaveNode, s_heartbeatConsumer *tabHeartbeatConsumer, u8 nbHeartbeats);
 void slaveHeartbeatProducer (u8 slaveNode, u16 time);
 void masterPDOTransmissionMode (u32 indexPDO,  u8 transType);
 void slavePDOTransmissionMode (u8 slaveNode, u32 indexPDO,  u8 transType);
-<<<<<<< HEAD
 void masterSYNCPeriod (u32 SYNCPeriod);
-=======
-void masterSYNCPeriod (u32 SYNCPeriod);
->>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
 u8 waitingWriteToSlaveDict ( u8 slaveNode, u8 error);
 u8 waitingReadToSlaveDict (u8 slaveNode, void * data, u8 * size, u8 error);
 
@@ -144,13 +125,8 @@ u8 initCANopenMain (void);
  *
  */
 
-<<<<<<< HEAD
 u8 initResetMode (void);
 
-=======
-u8 initResetMode (void);
-
->>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
 e_nodeState stateNode (u8 node);
 
 

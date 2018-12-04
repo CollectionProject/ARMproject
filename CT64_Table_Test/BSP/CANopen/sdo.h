@@ -74,11 +74,7 @@
 /** When a structure needn't yet to be used
  * the structure fields are put to 0
  */
-<<<<<<< HEAD
 void resetSDOline (u8 bus_id, u8 num);
-=======
-void resetSDOline (u8 bus_id, u8 num);
->>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
 void resetSDOline1 (u8 bus_id);
 
 /** Search for an unused line in the transfers array

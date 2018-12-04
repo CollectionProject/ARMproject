@@ -124,11 +124,7 @@ u8 masterSendNMTstateChange(u8 bus_id, u8 Node_ID, u8 cs)
   msg. RTR  = CAN_RTR_DATA;
   msg. DLC  = 2;
   msg. Data[0] = cs;
-<<<<<<< HEAD
   msg. Data[1] = Node_ID;
-=======
-  msg. Data[1] = Node_ID;
->>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
 	msg. IDE     = CAN_ID_STD;
   
 //  return f_can_send(bus_id,&m);

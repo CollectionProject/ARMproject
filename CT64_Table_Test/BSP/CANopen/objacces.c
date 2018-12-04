@@ -96,11 +96,7 @@ u8 accessDictionaryError(u16 index, u8 subIndex, u8 sizeDataDict, u8 sizeDataGiv
 //      MSG_WAR(0x2B16,"Not mappable data in a PDO at index    : ", index);
       break;
   default :
-<<<<<<< HEAD
 //    MSG_WAR(0x2B16, "Unknown error code : ", code);
-=======
-//    MSG_WAR(0x2B16, "Unknown error code : ", code);
->>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
       break;
   }
   return 0; 
@@ -146,31 +142,19 @@ u32 setODentry( u16 wIndex, u8 bSubindex, void * pbData, u8 dwSize, u8 checkAcce
   if (errorCode != OD_SUCCESSFUL)
     return errorCode;
 
-<<<<<<< HEAD
   if( ptrTable->bSubCount <= bSubindex ) 
-=======
-  if( ptrTable->bSubCount <= bSubindex ) 
->>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
   {
     // Subindex not found
     //accessDictionaryError(wIndex, bSubindex, 0, dwSize, OD_NO_SUCH_SUBINDEX);
     return OD_NO_SUCH_SUBINDEX;
   }
   szData = ptrTable->pSubindex[bSubindex].size;
-<<<<<<< HEAD
   if (szData != dwSize) 
-=======
-  if (szData != dwSize) 
->>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
   {
     //accessDictionaryError(wIndex, bSubindex, szData, dwSize, OD_LENGTH_DATA_INVALID);
     return OD_LENGTH_DATA_INVALID;
   }
-<<<<<<< HEAD
   if (checkAccess && (ptrTable->pSubindex[bSubindex].bAccessType == RO)) 
-=======
-  if (checkAccess && (ptrTable->pSubindex[bSubindex].bAccessType == RO)) 
->>>>>>> e3f6a3410b8ad0ffd2f42831f118e55ba176fe1c
   {
     //accessDictionaryError(wIndex, bSubindex, 0, dwSize, OD_WRITE_NOT_ALLOWED);
     return OD_WRITE_NOT_ALLOWED;
