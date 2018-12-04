@@ -110,12 +110,14 @@ void CAN1_SendByte(u8 CanID,u8 len,u8 *CanSendByte)
   TxMessage.DLC = len;
   TxMessage.StdId = CanID;
 	memcpy(TxMessage.Data,CanSendByte,len);
-  do
-	{
-		CAN_TransmitStatus(CAN1, CAN_Transmit(CAN1, &TxMessage));
-		delay_ms(1);
-	}
-	while (!CAN1_TX_ok);
+//  do
+//	{
+//		CAN_TransmitStatus(CAN1, CAN_Transmit(CAN1, &TxMessage));
+//		delay_ms(1);
+//	}
+//	while (!CAN1_TX_ok);
+	CAN_Transmit(CAN1, &TxMessage);
+	delay_ms(1);
 }
 
 void CAN1_RX0_IRQHandler(void)

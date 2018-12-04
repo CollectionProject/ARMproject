@@ -393,7 +393,7 @@ static void task_MonitorSC(void *p_arg)
 				switch(msg->Data[0])
 				{
 					case 0:
-						if((GlobalState!=POST) &&(msg->DLC==1))
+						if((GlobalState==ABNORMAL||GlobalState==POSTFAIL) &&(msg->DLC==1))
 						{
 							CAN_SendTableTotal(V_BREAK_TOTAL,1);
 							post_flag=1;
